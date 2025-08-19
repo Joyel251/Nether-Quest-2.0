@@ -14,6 +14,7 @@ export default function TeamLoginPage() {
   const [isLoggingIn, setIsLoggingIn] = useState(false)
   const [errors, setErrors] = useState({ teamName: "", teamNumber: "" })
   const [showAvatar, setShowAvatar] = useState(false)
+  const [isTransitioning, setIsTransitioning] = useState(false)
   const router = useRouter()
 
   const getTeamTheme = (num: number) => {
@@ -53,8 +54,12 @@ export default function TeamLoginPage() {
     }
 
     setErrors({ ...errors, teamNumber: "" })
+    setIsTransitioning(true)
     setShowAvatar(true)
-    setTimeout(() => setCurrentStep(2), 500)
+    setTimeout(() => {
+      setCurrentStep(2)
+      setIsTransitioning(false)
+    }, 800)
   }
 
   const handleTeamNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,46 +129,52 @@ export default function TeamLoginPage() {
         ))}
       </div>
 
-      <div className="relative z-10 w-full max-w-md mx-auto px-6">
-        <div className="text-center mb-12">
-          <div className="mb-8">
+      <div className="relative z-10 w-full max-w-md mx-auto px-6 flex flex-col justify-center min-h-screen">
+        <div className="text-center mb-8">
+          <div className="mb-6">
             <div
-              className={`w-24 h-1 bg-gradient-to-r from-transparent via-${currentTheme.accent}-500 to-transparent mx-auto mb-6 animate-pulse`}
+              className={`w-24 h-1 bg-gradient-to-r from-transparent via-${currentTheme.accent}-500 to-transparent mx-auto mb-4 animate-pulse`}
             />
             <h1
-              className={`text-6xl font-minecraft text-white mb-4 drop-shadow-2xl transition-all duration-1000 ${
+              className={`text-4xl font-minecraft text-white mb-4 drop-shadow-2xl transition-all duration-1000 ${
                 showContent ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
               }`}
               style={{
-                textShadow: "6px 6px 0px rgba(0,0,0,0.8), 3px 3px 0px rgba(255,165,0,0.4)",
+                textShadow: "4px 4px 0px rgba(0,0,0,0.8), 2px 2px 0px rgba(255,165,0,0.4)",
               }}
             >
-              <span className="text-orange-400">NETHER</span> <span className="text-red-300">QUEST</span>
+              <span className="text-white animate-pulse">NETHER</span> <span className="text-red-500 animate-pulse" style={{ animationDelay: "0.5s" }}>QUEST</span>
             </h1>
             <div
-              className={`w-32 h-1 bg-gradient-to-r from-transparent via-${currentTheme.accent}-400 to-transparent mx-auto mb-6`}
+              className={`w-32 h-1 bg-gradient-to-r from-transparent via-${currentTheme.accent}-400 to-transparent mx-auto mb-4`}
             />
           </div>
 
-          {showAvatar && teamNumber && (
-            <div
-              className={`mb-12 transition-all duration-700 ${showAvatar ? "opacity-100 scale-100" : "opacity-0 scale-50"}`}
-            >
-              <div className="relative flex flex-col items-center">
-                <div className="bg-gradient-to-b from-black/30 to-transparent rounded-full p-6 mb-4">
-                  <TeamAvatar teamNumber={Number.parseInt(teamNumber)} className="mx-auto drop-shadow-2xl" />
-                </div>
-                <div className={`text-center bg-gradient-to-r from-transparent via-${currentTheme.accent}-500/20 to-transparent px-6 py-2 rounded-lg`}>
-                  <p className={`text-${currentTheme.accent}-300 font-minecraft text-sm uppercase tracking-wider`}>
-                    Team #{teamNumber}
-                  </p>
+          {/* Fixed height container for avatar to prevent layout shift */}
+          <div className="h-28 mb-4 flex items-center justify-center">
+            {showAvatar && teamNumber && (
+              <div
+                className={`transition-all duration-700 ease-out ${showAvatar ? "opacity-100 scale-100 animate-popup" : "opacity-0 scale-50"}`}
+              >
+                <div className="relative flex flex-col items-center justify-center">
+                  <div className="bg-gradient-to-b from-black/50 to-transparent rounded-full p-4 mb-3 shadow-2xl">
+                    <TeamAvatar 
+                      teamNumber={Number.parseInt(teamNumber)} 
+                      className="mx-auto drop-shadow-2xl w-16 h-16 transition-all duration-300 hover:scale-110" 
+                    />
+                  </div>
+                  <div className={`text-center bg-gradient-to-r from-transparent via-${currentTheme.accent}-500/30 to-transparent px-4 py-2 rounded-lg shadow-lg`}>
+                    <p className={`text-${currentTheme.accent}-200 font-minecraft text-sm uppercase tracking-wider font-bold`}>
+                      Team #{teamNumber}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           <p
-            className={`text-2xl font-minecraft text-orange-300 drop-shadow-lg transition-all duration-1000 delay-300 ${
+            className={`text-xl font-minecraft text-orange-300 drop-shadow-lg transition-all duration-1000 delay-300 ${
               showContent ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
             }`}
             style={{
@@ -175,7 +186,7 @@ export default function TeamLoginPage() {
         </div>
 
         <div
-          className={`bg-gradient-to-b from-black/50 to-${currentTheme.accent}-900/50 backdrop-blur-md border-4 border-${currentTheme.accent}-600/60 p-8 minecraft-block transition-all duration-1000 delay-500 relative overflow-hidden ${
+          className={`bg-gradient-to-b from-black/50 to-${currentTheme.accent}-900/50 backdrop-blur-md border-4 border-${currentTheme.accent}-600/60 p-6 minecraft-block transition-all duration-1000 delay-500 relative overflow-hidden ${
             showContent ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
           }`}
           style={{ imageRendering: "pixelated" }}
@@ -184,12 +195,12 @@ export default function TeamLoginPage() {
             className={`absolute inset-0 bg-gradient-to-r from-transparent via-${currentTheme.accent}-500/5 to-transparent animate-pulse`}
           />
 
-          <div className="relative z-10">
+          <div className="relative z-10 overflow-hidden">
             {currentStep === 1 && (
-              <div className="space-y-8">
+              <div className={`space-y-6 transition-all duration-800 ${isTransitioning ? 'transform -translate-x-full opacity-0' : 'transform translate-x-0 opacity-100'}`}>
                 <div>
                   <label
-                    className={`block text-${currentTheme.accent}-200 font-minecraft text-sm mb-4 tracking-wider uppercase`}
+                    className={`block text-${currentTheme.accent}-200 font-minecraft text-sm mb-3 tracking-wider uppercase`}
                   >
                     Team Number
                   </label>
@@ -198,7 +209,7 @@ export default function TeamLoginPage() {
                     value={teamNumber}
                     onChange={handleTeamNumberChange}
                     onKeyPress={(e) => e.key === "Enter" && handleTeamNumberSubmit()}
-                    className={`w-full px-6 py-5 bg-gradient-to-b from-${currentTheme.accent}-900/90 to-black/90 
+                    className={`w-full px-4 py-4 bg-gradient-to-b from-${currentTheme.accent}-900/90 to-black/90 
                              border-4 border-t-${currentTheme.accent}-600 border-l-${currentTheme.accent}-600 
                              border-r-black border-b-black
                              text-red-400 font-minecraft text-lg
@@ -211,7 +222,7 @@ export default function TeamLoginPage() {
                     autoFocus
                   />
                   {errors.teamNumber && (
-                    <p className="text-red-400 font-minecraft text-xs mt-3 tracking-wider animate-pulse flex items-center gap-2">
+                    <p className="text-red-400 font-minecraft text-xs mt-2 tracking-wider animate-pulse flex items-center gap-2">
                       <span>⚠</span> {errors.teamNumber}
                     </p>
                   )}
@@ -220,10 +231,9 @@ export default function TeamLoginPage() {
                 <button
                   type="button"
                   onClick={handleTeamNumberSubmit}
-                  className={`w-full py-6 font-minecraft font-bold text-xl tracking-wider
+                  className={`w-full py-4 font-minecraft font-bold text-lg tracking-wider
                            bg-gradient-to-b from-${currentTheme.accent}-400 via-${currentTheme.accent}-600 to-${currentTheme.accent}-800 
                            hover:from-${currentTheme.accent}-300 hover:via-${currentTheme.accent}-500 hover:to-${currentTheme.accent}-700
-                           text-white
                            border-4 border-t-${currentTheme.accent}-200 border-l-${currentTheme.accent}-200 
                            border-r-black border-b-black
                            hover:border-t-white hover:border-l-white
@@ -233,10 +243,17 @@ export default function TeamLoginPage() {
                            uppercase relative overflow-hidden group`}
                   style={{
                     imageRendering: "pixelated",
-                    textShadow: "3px 3px 0px rgba(0,0,0,0.8), 1px 1px 0px rgba(0,0,0,0.5)",
                   }}
                 >
-                  <span className="relative z-10">⚡ CONTINUE ⚡</span>
+                  <span 
+                    className="relative z-10 text-white font-bold"
+                    style={{
+                      textShadow: "2px 2px 0px rgba(0,0,0,1), -1px -1px 0px rgba(0,0,0,1), 1px -1px 0px rgba(0,0,0,1), -1px 1px 0px rgba(0,0,0,1)",
+                      WebkitTextStroke: "1px black"
+                    }}
+                  >
+                    CONTINUE
+                  </span>
                   <div
                     className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700`}
                   />
@@ -245,10 +262,10 @@ export default function TeamLoginPage() {
             )}
 
             {currentStep === 2 && (
-              <form onSubmit={handleLogin} className="space-y-8">
-                <div className="animate-fadeIn">
+              <form onSubmit={handleLogin} className={`space-y-6 transition-all duration-800 ${!isTransitioning ? 'transform translate-x-0 opacity-100' : 'transform translate-x-full opacity-0'}`}>
+                <div className={`transition-all duration-1000 delay-300 ${!isTransitioning ? 'transform translate-y-0 opacity-100 scale-100' : 'transform translate-y-8 opacity-0 scale-95'}`}>
                   <label
-                    className={`block text-${currentTheme.accent}-200 font-minecraft text-sm mb-4 tracking-wider uppercase`}
+                    className={`block text-${currentTheme.accent}-200 font-minecraft text-sm mb-3 tracking-wider uppercase transition-all duration-700 delay-500 ${!isTransitioning ? 'transform translate-x-0 opacity-100' : 'transform translate-x-4 opacity-0'}`}
                   >
                     Team Name
                   </label>
@@ -256,45 +273,60 @@ export default function TeamLoginPage() {
                     type="text"
                     value={teamName}
                     onChange={(e) => setTeamName(e.target.value)}
-                    className={`w-full px-6 py-5 bg-gradient-to-b from-${currentTheme.accent}-900/90 to-black/90 
+                    className={`w-full px-4 py-4 bg-gradient-to-b from-${currentTheme.accent}-900/90 to-black/90 
                              border-4 border-t-${currentTheme.accent}-600 border-l-${currentTheme.accent}-600 
                              border-r-black border-b-black
                              text-red-400 font-minecraft text-lg
                              focus:border-t-${currentTheme.accent}-400 focus:border-l-${currentTheme.accent}-400
                              focus:outline-none focus:ring-0 focus:shadow-lg focus:shadow-${currentTheme.accent}-500/20
                              minecraft-block custom-cursor
-                             placeholder-${currentTheme.accent}-400/60 transition-all duration-300`}
+                             placeholder-${currentTheme.accent}-400/60 transition-all duration-500 delay-700
+                             ${!isTransitioning ? 'transform translate-y-0 opacity-100 scale-100' : 'transform translate-y-6 opacity-0 scale-95'}`}
                     placeholder="Enter your team name..."
                     style={{ imageRendering: "pixelated", letterSpacing: "0.08em" }}
                     disabled={isLoggingIn}
                     autoFocus
                   />
                   {errors.teamName && (
-                    <p className="text-red-400 font-minecraft text-xs mt-3 tracking-wider animate-pulse flex items-center gap-2">
+                    <p className="text-red-400 font-minecraft text-xs mt-2 tracking-wider animate-pulse flex items-center gap-2">
                       <span>⚠</span> {errors.teamName}
                     </p>
                   )}
                 </div>
 
-                <div className="flex gap-4">
+                <div className={`flex gap-3 transition-all duration-1000 delay-900 ${!isTransitioning ? 'transform translate-y-0 opacity-100' : 'transform translate-y-8 opacity-0'}`}>
                   <button
                     type="button"
                     onClick={() => {
-                      setCurrentStep(1)
-                      setShowAvatar(false)
+                      setIsTransitioning(true)
+                      setTimeout(() => {
+                        setCurrentStep(1)
+                        setShowAvatar(false)
+                        setIsTransitioning(false)
+                      }, 400)
                     }}
-                    className={`px-8 py-4 font-minecraft text-sm bg-gradient-to-b from-gray-600 to-gray-800 hover:from-gray-500 hover:to-gray-700 text-white border-4 border-gray-400 hover:border-gray-300 minecraft-block transition-all duration-300 hover:scale-105 uppercase tracking-wider`}
+                    className={`px-6 py-3 font-minecraft text-base bg-gradient-to-b from-gray-600 to-gray-800 hover:from-gray-500 hover:to-gray-700 border-4 border-gray-400 hover:border-gray-300 minecraft-block transition-all duration-300 hover:scale-105 uppercase tracking-wider`}
+                    style={{
+                      imageRendering: "pixelated",
+                    }}
                   >
-                    ← BACK
+                    <span 
+                      className="text-white font-bold"
+                      style={{
+                        textShadow: "2px 2px 0px rgba(0,0,0,1), -1px -1px 0px rgba(0,0,0,1), 1px -1px 0px rgba(0,0,0,1), -1px 1px 0px rgba(0,0,0,1)",
+                        WebkitTextStroke: "1px black"
+                      }}
+                    >
+                      ← BACK
+                    </span>
                   </button>
 
                   <button
                     type="submit"
                     disabled={isLoggingIn}
-                    className={`flex-1 py-6 font-minecraft font-bold text-xl tracking-wider
+                    className={`flex-1 py-4 font-minecraft font-bold text-lg tracking-wider
                              bg-gradient-to-b from-${currentTheme.accent}-400 via-${currentTheme.accent}-600 to-${currentTheme.accent}-800 
                              hover:from-${currentTheme.accent}-300 hover:via-${currentTheme.accent}-500 hover:to-${currentTheme.accent}-700
-                             text-white
                              border-4 border-t-${currentTheme.accent}-200 border-l-${currentTheme.accent}-200 
                              border-r-black border-b-black
                              hover:border-t-white hover:border-l-white
@@ -307,17 +339,22 @@ export default function TeamLoginPage() {
                              uppercase relative overflow-hidden group`}
                     style={{
                       imageRendering: "pixelated",
-                      textShadow: "3px 3px 0px rgba(0,0,0,0.8), 1px 1px 0px rgba(0,0,0,0.5)",
                     }}
                   >
-                    <span className="relative z-10">
+                    <span 
+                      className="relative z-10 text-white font-bold"
+                      style={{
+                        textShadow: "2px 2px 0px rgba(0,0,0,1), -1px -1px 0px rgba(0,0,0,1), 1px -1px 0px rgba(0,0,0,1), -1px 1px 0px rgba(0,0,0,1)",
+                        WebkitTextStroke: "1px black"
+                      }}
+                    >
                       {isLoggingIn ? (
                         <span className="flex items-center justify-center gap-3">
-                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                           ENTERING...
                         </span>
                       ) : (
-                        "⚔ENTER QUEST"
+                        "ENTER QUEST"
                       )}
                     </span>
                     {!isLoggingIn && (
@@ -333,7 +370,7 @@ export default function TeamLoginPage() {
         </div>
 
         <div
-          className={`mt-8 text-center transition-all duration-1000 delay-700 ${showContent ? "opacity-100" : "opacity-0"}`}
+          className={`mt-6 text-center transition-all duration-1000 delay-700 ${showContent ? "opacity-100" : "opacity-0"}`}
         >
           <div
             className={`w-48 h-0.5 bg-gradient-to-r from-transparent via-${currentTheme.accent}-500 to-transparent mx-auto animate-pulse mb-4`}

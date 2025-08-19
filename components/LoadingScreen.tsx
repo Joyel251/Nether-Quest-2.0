@@ -42,7 +42,9 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
           firstContent={
             <div className="w-full h-full flex items-center justify-center bg-black">
               <div className="text-center">
-                <div className="text-white font-minecraft text-lg mb-8 animate-pulse">NETHER QUEST 2.0</div>
+                <div className="font-minecraft text-lg mb-8 animate-pulse">
+                  <span className="text-white-400">NETHER</span> <span className="text-white-300">QUEST</span> <span className="text-white">2.0</span>
+                </div>
                 <div className="text-orange-400 font-minecraft text-sm mb-4">CLICK ANYWHERE TO ENTER</div>
                 <div className="w-2 h-2 bg-orange-500 mx-auto animate-ping" />
               </div>

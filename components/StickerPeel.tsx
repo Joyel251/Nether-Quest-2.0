@@ -65,7 +65,7 @@ const StickerPeel: React.FC<StickerPeelProps> = ({
   const defaultPadding = 10
 
   useEffect(() => {
-    audioRef.current = new Audio("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/peel-prawns-277146-79v5ftH22R1zDtMwbaot37x3awyMHh.mp3")
+    audioRef.current = new Audio("/peel-sound.mp3")
     audioRef.current.volume = 0.3
     audioRef.current.preload = "auto"
     audioRef.current.load() // Force load
@@ -268,12 +268,34 @@ const StickerPeel: React.FC<StickerPeelProps> = ({
     let startY = 0
     let currentY = 0
     let isDragging = false
+    let isAudioPlaying = false
 
     const handleTouchStart = (e: TouchEvent) => {
       startY = e.touches[0].clientY
       isDragging = true
       setIsDragPeeling(true)
       container.classList.add("touch-active")
+
+      if (audioRef.current && audioRef.current.readyState >= 2 && !isAudioPlaying) {
+        try {
+          audioRef.current.currentTime = 0
+          audioRef.current.loop = false
+          const playPromise = audioRef.current.play()
+
+          if (playPromise !== undefined) {
+            playPromise
+              .then(() => {
+                isAudioPlaying = true
+                console.log("[v0] Audio started on touch")
+              })
+              .catch((error) => {
+                console.log("[v0] Audio playback failed:", error)
+              })
+          }
+        } catch (error) {
+          console.log("[v0] Audio error:", error)
+        }
+      }
     }
 
     const handleTouchMove = (e: TouchEvent) => {
@@ -288,8 +310,13 @@ const StickerPeel: React.FC<StickerPeelProps> = ({
 
       setDragPeelPct(peelPct)
 
-      if (peelPct > 0) {
-        playPeelSound(peelPct)
+      if (audioRef.current && isAudioPlaying && !audioRef.current.paused) {
+        const totalDuration = audioRef.current.duration
+        const targetTime = (peelPct / 100) * totalDuration * 0.8 // Scale to 80% of duration
+
+        if (Math.abs(audioRef.current.currentTime - targetTime) > 0.1) {
+          audioRef.current.currentTime = Math.min(targetTime, totalDuration - 0.1)
+        }
       }
     }
 
@@ -298,7 +325,16 @@ const StickerPeel: React.FC<StickerPeelProps> = ({
       setIsDragPeeling(false)
       setDragPeelPct(0)
       container.classList.remove("touch-active")
-      setTimeout(() => stopSound(), 600) // Match transition duration
+
+      if (audioRef.current && isAudioPlaying) {
+        setTimeout(() => {
+          if (audioRef.current && !audioRef.current.paused) {
+            audioRef.current.pause()
+            audioRef.current.currentTime = 0
+          }
+          isAudioPlaying = false
+        }, 600) // Match transition duration
+      }
     }
 
     const handleMouseDown = () => {

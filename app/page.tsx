@@ -98,7 +98,7 @@ export default function HomePage() {
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
         style={{
-          backgroundImage: "url(/nether-background.gif)",
+          backgroundImage: "url(/nether-background.webp)",
           backgroundAttachment: "scroll", // Override bg-fixed on mobile for better performance
         }}
       />

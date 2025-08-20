@@ -78,7 +78,7 @@ export default function HomePage() {
     setParticles(newParticles)
 
     setTimeout(() => {
-      triggerPixelTransition("/login")
+      triggerPixelTransition("/dashboard")
     }, 400)
 
     setTimeout(() => {

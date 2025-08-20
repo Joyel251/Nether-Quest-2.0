@@ -103,8 +103,8 @@ export default function SignupPage() {
       hasErrors = true
     } else {
       const num = Number.parseInt(teamNumber)
-      if (isNaN(num) || num < 1 || num > 999) {
-        newErrors.teamNumber = "Team number must be between 1 and 999"
+      if (isNaN(num) || num < 1 || num > 60) {
+        newErrors.teamNumber = "Team number must be between 1 and 60"
         hasErrors = true
       }
     }
@@ -116,8 +116,8 @@ export default function SignupPage() {
     } else if (password.length < 6) {
       newErrors.password = "Password must be at least 6 characters"
       hasErrors = true
-    } else if (password.length > 100) {
-      newErrors.password = "Password must be less than 100 characters"
+    } else if (password.length > 20) {
+      newErrors.password = "Password must be less than 20 characters"
       hasErrors = true
     }
 
@@ -221,35 +221,19 @@ export default function SignupPage() {
           </div>
 
           <form onSubmit={handleSignup} className="space-y-4 sm:space-y-5">
-            {/* Team Name Input */}
-            <div className={`transition-all duration-1000 delay-300 ${showContent ? 'transform translate-y-0 opacity-100 scale-100' : 'transform translate-y-8 opacity-0 scale-95'}`}>
-              <label className={`block text-${currentTheme.accent}-200 font-minecraft text-xs sm:text-sm mb-2 tracking-wider uppercase`}>
-                Team Name
-              </label>
-              <input
-                type="text"
-                value={teamName}
-                onChange={handleTeamNameChange}
-                maxLength={50}
-                className={`w-full px-3 sm:px-4 py-3 sm:py-4 bg-gradient-to-b from-${currentTheme.accent}-900/90 to-black/90 
-                           border-4 border-t-${currentTheme.accent}-600 border-l-${currentTheme.accent}-600 
-                           border-r-black border-b-black
-                           hover:border-t-${currentTheme.accent}-500 hover:border-l-${currentTheme.accent}-500
-                           focus:border-t-${currentTheme.accent}-400 focus:border-l-${currentTheme.accent}-400
-                           focus:outline-none
-                           text-red-400 font-minecraft text-sm sm:text-base tracking-wider
-                           minecraft-block transition-all duration-300
-                           placeholder-red-600`}
-                placeholder="Enter your team name"
-                style={{ imageRendering: "pixelated" }}
-                autoComplete="off"
-              />
-              {errors.teamName && (
-                <p className="text-red-400 font-minecraft text-xs mt-2 tracking-wider animate-pulse flex items-center gap-2">
-                  <span>⚠</span> {errors.teamName}
-                </p>
-              )}
-            </div>
+            {/* Team Avatar Display */}
+            {showAvatar && teamNumber && !isNaN(Number.parseInt(teamNumber)) && (
+              <div className={`text-center transition-all duration-1000 delay-700 ${showAvatar ? 'transform translate-y-0 opacity-100 scale-100' : 'transform translate-y-8 opacity-0 scale-95'}`}>
+                <div className="flex justify-center mb-3 sm:mb-4">
+                  <div className="relative">
+                    <TeamAvatar teamNumber={Number.parseInt(teamNumber)} className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 animate-float" />
+                    <div className="absolute -inset-2 bg-gradient-to-r from-orange-400/30 to-red-500/30 rounded-full blur-sm animate-pulse" />
+                  </div>
+                </div>
+                <p className="text-white font-minecraft text-xs sm:text-sm mb-2">Team #{teamNumber}</p>
+                <p className="text-gray-300 font-minecraft text-xs">Your team avatar</p>
+              </div>
+            )}
 
             {/* Team Number Input */}
             <div className={`transition-all duration-1000 delay-500 ${showContent ? 'transform translate-y-0 opacity-100 scale-100' : 'transform translate-y-8 opacity-0 scale-95'}`}>
@@ -281,19 +265,35 @@ export default function SignupPage() {
               )}
             </div>
 
-            {/* Team Avatar Display */}
-            {showAvatar && teamNumber && !isNaN(Number.parseInt(teamNumber)) && (
-              <div className={`text-center transition-all duration-1000 delay-700 ${showAvatar ? 'transform translate-y-0 opacity-100 scale-100' : 'transform translate-y-8 opacity-0 scale-95'}`}>
-                <div className="flex justify-center mb-3 sm:mb-4">
-                  <div className="relative">
-                    <TeamAvatar teamNumber={Number.parseInt(teamNumber)} className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 animate-float" />
-                    <div className="absolute -inset-2 bg-gradient-to-r from-orange-400/30 to-red-500/30 rounded-full blur-sm animate-pulse" />
-                  </div>
-                </div>
-                <p className="text-white font-minecraft text-xs sm:text-sm mb-2">Team #{teamNumber}</p>
-                <p className="text-gray-300 font-minecraft text-xs">Your team avatar</p>
-              </div>
-            )}
+            {/* Team Name Input */}
+            <div className={`transition-all duration-1000 delay-300 ${showContent ? 'transform translate-y-0 opacity-100 scale-100' : 'transform translate-y-8 opacity-0 scale-95'}`}>
+              <label className={`block text-${currentTheme.accent}-200 font-minecraft text-xs sm:text-sm mb-2 tracking-wider uppercase`}>
+                Team Name
+              </label>
+              <input
+                type="text"
+                value={teamName}
+                onChange={handleTeamNameChange}
+                maxLength={50}
+                className={`w-full px-3 sm:px-4 py-3 sm:py-4 bg-gradient-to-b from-${currentTheme.accent}-900/90 to-black/90 
+                           border-4 border-t-${currentTheme.accent}-600 border-l-${currentTheme.accent}-600 
+                           border-r-black border-b-black
+                           hover:border-t-${currentTheme.accent}-500 hover:border-l-${currentTheme.accent}-500
+                           focus:border-t-${currentTheme.accent}-400 focus:border-l-${currentTheme.accent}-400
+                           focus:outline-none
+                           text-red-400 font-minecraft text-sm sm:text-base tracking-wider
+                           minecraft-block transition-all duration-300
+                           placeholder-red-600`}
+                placeholder="Enter your team name"
+                style={{ imageRendering: "pixelated" }}
+                autoComplete="off"
+              />
+              {errors.teamName && (
+                <p className="text-red-400 font-minecraft text-xs mt-2 tracking-wider animate-pulse flex items-center gap-2">
+                  <span>⚠</span> {errors.teamName}
+                </p>
+              )}
+            </div>
 
             {/* Password Input */}
             <div className={`transition-all duration-1000 delay-700 ${showContent ? 'transform translate-y-0 opacity-100 scale-100' : 'transform translate-y-8 opacity-0 scale-95'}`}>

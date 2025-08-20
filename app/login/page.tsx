@@ -10,7 +10,6 @@ import { login } from "./actions"
 export default function LoginPage() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [showContent, setShowContent] = useState(false)
-  const [teamName, setTeamName] = useState("")
   const [teamNumber, setTeamNumber] = useState("")
   const [loginPassword, setLoginPassword] = useState("")
   const [showLoginPassword, setShowLoginPassword] = useState(false)
@@ -49,12 +48,6 @@ export default function LoginPage() {
     }
   }, [])
 
-  const handleTeamNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTeamName(e.target.value)
-    setErrors({ ...errors, teamName: "" })
-    setLoginMessage("")
-  }
-
   const handleTeamNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, "")
     setTeamNumber(value)
@@ -72,15 +65,6 @@ export default function LoginPage() {
   const validateForm = () => {
     const newErrors = { teamName: "", teamNumber: "", loginPassword: "" }
     let hasErrors = false
-
-    // Team name validation
-    if (!teamName.trim()) {
-      newErrors.teamName = "Team name is required"
-      hasErrors = true
-    } else if (teamName.trim().length < 2) {
-      newErrors.teamName = "Team name must be at least 2 characters"
-      hasErrors = true
-    }
 
     // Team number validation
     if (!teamNumber.trim()) {
@@ -120,7 +104,6 @@ export default function LoginPage() {
 
     const formData = new FormData()
     formData.append('team-number', teamNumber)
-    formData.append('team-name', teamName)
     formData.append('password', loginPassword)
 
     try {
@@ -193,39 +176,20 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4 sm:space-y-6">
-            {/* Team Name Input */}
-            <div className={`transition-all duration-1000 delay-300 ${showContent ? 'transform translate-y-0 opacity-100 scale-100' : 'transform translate-y-8 opacity-0 scale-95'}`}>
-              <label
-                className={`block text-${currentTheme.accent}-200 font-minecraft text-xs sm:text-sm mb-2 sm:mb-3 tracking-wider uppercase`}
-              >
-                Team Name
-              </label>
-              <input
-                type="text"
-                value={teamName}
-                onChange={handleTeamNameChange}
-                className={`w-full px-4 py-3 sm:py-4 bg-gradient-to-b from-${currentTheme.accent}-900/90 to-black/90 
-                           border-4 border-t-${currentTheme.accent}-600 border-l-${currentTheme.accent}-600 
-                           border-r-black border-b-black
-                           hover:border-t-${currentTheme.accent}-500 hover:border-l-${currentTheme.accent}-500
-                           focus:border-t-${currentTheme.accent}-400 focus:border-l-${currentTheme.accent}-400
-                           focus:outline-none
-                           text-red-400 font-minecraft text-sm sm:text-base tracking-wider
-                           minecraft-block transition-all duration-300
-                           placeholder-red-600`}
-                placeholder="Enter your team name"
-                style={{
-                  imageRendering: "pixelated",
-                }}
-              />
-              {errors.teamName && (
-                <p className="text-red-400 font-minecraft text-xs mt-2 tracking-wider animate-pulse flex items-center gap-2">
-                  <span>⚠</span> {errors.teamName}
-                </p>
-              )}
-            </div>
+          {/* Team Avatar Display */}
+            {showAvatar && teamNumber && (
+              <div className={`text-center transition-all duration-1000 delay-700 ${showAvatar ? 'transform translate-y-0 opacity-100 scale-100' : 'transform translate-y-8 opacity-0 scale-95'}`}>
+                <div className="flex justify-center mb-4">
+                  <div className="relative">
+                    <TeamAvatar teamNumber={Number.parseInt(teamNumber)} className="w-16 h-16 sm:w-20 sm:h-20 animate-float" />
+                    <div className="absolute -inset-2 bg-gradient-to-r from-orange-400/30 to-red-500/30 rounded-full blur-sm animate-pulse" />
+                  </div>
+                </div>
+                <p className="text-white font-minecraft text-sm mb-2">Team #{teamNumber}</p>
+              </div>
+            )}
 
+          <form onSubmit={handleLogin} className="space-y-4 sm:space-y-6">
             {/* Team Number Input */}
             <div className={`transition-all duration-1000 delay-500 ${showContent ? 'transform translate-y-0 opacity-100 scale-100' : 'transform translate-y-8 opacity-0 scale-95'}`}>
               <label
@@ -257,19 +221,6 @@ export default function LoginPage() {
                 </p>
               )}
             </div>
-
-            {/* Team Avatar Display */}
-            {showAvatar && teamNumber && (
-              <div className={`text-center transition-all duration-1000 delay-700 ${showAvatar ? 'transform translate-y-0 opacity-100 scale-100' : 'transform translate-y-8 opacity-0 scale-95'}`}>
-                <div className="flex justify-center mb-4">
-                  <div className="relative">
-                    <TeamAvatar teamNumber={Number.parseInt(teamNumber)} className="w-16 h-16 sm:w-20 sm:h-20 animate-float" />
-                    <div className="absolute -inset-2 bg-gradient-to-r from-orange-400/30 to-red-500/30 rounded-full blur-sm animate-pulse" />
-                  </div>
-                </div>
-                <p className="text-white font-minecraft text-sm mb-2">Team #{teamNumber}</p>
-              </div>
-            )}
 
             {/* Password Input */}
             <div className={`transition-all duration-1000 delay-700 ${showContent ? 'transform translate-y-0 opacity-100 scale-100' : 'transform translate-y-8 opacity-0 scale-95'}`}>

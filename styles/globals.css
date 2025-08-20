@@ -295,3 +295,51 @@
 .hint-text {
   animation: hintFadeIn 0.3s ease-out forwards;
 }
+
+/* Pixel Transition Styles */
+.pixel-transition__pixel {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  transition: all 0.1s ease-out;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 
+    0 0 4px currentColor,
+    inset 0 0 2px rgba(255, 255, 255, 0.3),
+    inset 1px 1px 0px rgba(255, 255, 255, 0.5),
+    inset -1px -1px 0px rgba(0, 0, 0, 0.3);
+}
+
+.pixel-transition__pixel:nth-child(odd) {
+  animation-delay: 0.05s;
+}
+
+.pixel-transition__pixel:nth-child(even) {
+  animation-delay: 0.1s;
+}
+
+@keyframes pixelGlow {
+  0%, 100% {
+    box-shadow: 
+      0 0 4px currentColor,
+      inset 0 0 2px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    box-shadow: 
+      0 0 8px currentColor,
+      0 0 12px currentColor,
+      inset 0 0 4px rgba(255, 255, 255, 0.5);
+  }
+}
+
+.pixel-transition__pixel.glowing {
+  animation: pixelGlow 0.3s ease-in-out;
+}
+
+/* Enhance minecraft block effect during transition */
+.minecraft-block.transitioning {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  filter: contrast(1.2) saturate(1.1);
+}

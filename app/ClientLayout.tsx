@@ -3,6 +3,7 @@
 import type React from "react"
 import { useEffect, useRef } from "react"
 import ClickSpark from "../components/ClickSpark"
+import PageTransition from "../components/PageTransition"
 import "../styles/globals.css"
 
 // Removed Next.js font optimization as it conflicts with custom font
@@ -28,8 +29,15 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   // Only return children, no html/body tags
   return (
-    <ClickSpark sparkColor="#FFD700" sparkSize={15} sparkRadius={25} sparkCount={12} duration={600}>
-      {children}
-    </ClickSpark>
+    <PageTransition 
+      gridSize={14} 
+      pixelColor="#ff6600" 
+      animationDuration={1.2}
+      className="min-h-screen"
+    >
+      <ClickSpark sparkColor="#FFD700" sparkSize={15} sparkRadius={25} sparkCount={12} duration={600}>
+        {children}
+      </ClickSpark>
+    </PageTransition>
   )
 }

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import StickerPeel from "../components/StickerPeel"
 import LoadingScreen from "../components/LoadingScreen"
+import { triggerPixelTransition } from "../components/PageTransition"
 
 export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
@@ -15,7 +16,6 @@ export default function HomePage() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const [buttonTransform, setButtonTransform] = useState({ x: 0, y: 0, rotateX: 0, rotateY: 0 })
   const [logoHovered, setLogoHovered] = useState(false)
-  const [isTransitioning, setIsTransitioning] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const router = useRouter()
 
@@ -69,7 +69,6 @@ export default function HomePage() {
 
     setIsClicked(true)
     setIsBreaking(true)
-    setIsTransitioning(true)
 
     const newParticles = Array.from({ length: 16 }, (_, i) => ({
       id: Date.now() + i,
@@ -79,8 +78,8 @@ export default function HomePage() {
     setParticles(newParticles)
 
     setTimeout(() => {
-      router.push("/game")
-    }, 1200)
+      triggerPixelTransition("/login")
+    }, 400)
 
     setTimeout(() => {
       setIsClicked(false)
@@ -104,48 +103,6 @@ export default function HomePage() {
       />
 
       <style jsx>{`
-        @keyframes pixel-fill {
-          0% {
-            opacity: 0;
-            transform: scale(0);
-          }
-          50% {
-            opacity: 1;
-            transform: scale(1.2);
-          }
-          100% {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        
-        @keyframes fade-in-delayed {
-          0% {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        .animate-pixel-fill {
-          animation: pixel-fill 400ms ease-out forwards;
-        }
-        
-        .animate-fade-in-delayed {
-          animation: fade-in-delayed 600ms ease-out 600ms forwards;
-        }
-        
-        .grid-cols-20 {
-          grid-template-columns: repeat(20, minmax(0, 1fr));
-        }
-        
-        .grid-rows-12 {
-          grid-template-rows: repeat(12, minmax(0, 1fr));
-        }
-        
         @media (max-width: 768px) {
           .mobile-bg {
             background-size: cover !important;
@@ -156,32 +113,6 @@ export default function HomePage() {
           }
         }
       `}</style>
-
-      {isTransitioning && (
-        <div className="fixed inset-0 z-50 pointer-events-none">
-          {/* Pixel grid transition effect */}
-          <div className="absolute inset-0 grid grid-cols-20 grid-rows-12 gap-0">
-            {Array.from({ length: 240 }, (_, i) => (
-              <div
-                key={i}
-                className="bg-orange-500 opacity-0 animate-pixel-fill"
-                style={{
-                  animationDelay: `${Math.random() * 800}ms`,
-                  animationDuration: "400ms",
-                  animationFillMode: "forwards",
-                }}
-              />
-            ))}
-          </div>
-
-          {/* Loading text overlay */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-white font-minecraft text-2xl animate-pulse opacity-0 animate-fade-in-delayed">
-              ENTERING THE NETHER...
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="absolute inset-0 bg-black/50 mobile-bg" />
 
@@ -295,7 +226,7 @@ export default function HomePage() {
                 top: `50%`,
                 transform: `translate(${particle.x}px, ${particle.y}px)`,
                 animation: `minecraft-particle 0.6s ease-out forwards`,
-                boxShadow: "0 0 8px rgba(255, 60, 0, 1), 0 0 4px rgba(255, 69, 0, 0.8)",
+                boxShadow: "0 0 8px rgba(255, 165, 0, 1), 0 0 4px rgba(255, 69, 0, 0.8)",
                 imageRendering: "pixelated",
                 borderRadius: "1px",
               }}

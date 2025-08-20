@@ -10,14 +10,12 @@ export async function login(formData: FormData) {
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
-  const teamNumber = formData.get('team-number') as string
-  const teamName = formData.get('team-name') as string
   const data = {
-    email: "team"+teamNumber+"@supabase" as string,
+    email: "team"+formData.get('team-number')+"@supabase" as string,
     password: formData.get('password') as string,
   }
 
-  const { data: authData, error } = await supabase.auth.signInWithPassword({
+  const { error } = await supabase.auth.signInWithPassword({
     email: data.email,
     password: data.password,
   })
@@ -60,21 +58,45 @@ export async function login(formData: FormData) {
     throw new Error(error.message)
   }
 
-  // Login successful, now check if team name matches
-  if (authData.user && authData.user.user_metadata) {
-    const storedTeamName = authData.user.user_metadata.team_name
-    if (storedTeamName && storedTeamName.toLowerCase() !== teamName.toLowerCase()) {
-      // Sign out the user since team name doesn't match
-      await supabase.auth.signOut()
-      return {
-        success: false,
-        error: 'WRONG_TEAM_NAME',
-        message: 'Incorrect team name! Please check your team name and try again.'
-      }
-    }
-  }
-
-  // Redirect to dashboard after successful login and team name verification
+  // Redirect to dashboard after successful login
   revalidatePath('/', 'layout')
   redirect('/dashboard')
+}
+
+export async function signup(formData: FormData) {
+  const supabase = await createClient()
+
+  // type-casting here for convenience
+  // in practice, you should validate your inputs
+  const data = {
+    email: "team"+formData.get('team-number')+"@supabase" as string,
+    password: formData.get('password') as string,
+  }
+
+  console.log(data.email)
+
+  const { error } = await supabase.auth.signUp({
+    email: data.email,
+    password: data.password,
+  })
+
+  if (error) {
+    console.error('Supabase signup error:', error)
+    
+    // If user already exists, return a specific error type
+    if (error.message.includes('User already registered') || 
+        error.message.includes('already been registered') || 
+        error.code === 'user_already_exists') {
+      return { 
+        success: false, 
+        error: 'USER_EXISTS',
+        message: 'User already exists! Please proceed to login.' 
+      }
+    }
+    
+    throw new Error(error.message)
+  }
+
+  // Don't redirect - let the client handle the step transition
+  return { success: true }
 }

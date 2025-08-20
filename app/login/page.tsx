@@ -52,6 +52,7 @@ export default function LoginPage() {
   const handleTeamNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTeamName(e.target.value)
     setErrors({ ...errors, teamName: "" })
+    setLoginMessage("")
   }
 
   const handleTeamNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +60,13 @@ export default function LoginPage() {
     setTeamNumber(value)
     setErrors({ ...errors, teamNumber: "" })
     setShowAvatar(value.length > 0)
+    setLoginMessage("")
+  }
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoginPassword(e.target.value)
+    setErrors({ ...errors, loginPassword: "" })
+    setLoginMessage("")
   }
 
   const validateForm = () => {
@@ -69,17 +77,29 @@ export default function LoginPage() {
     if (!teamName.trim()) {
       newErrors.teamName = "Team name is required"
       hasErrors = true
+    } else if (teamName.trim().length < 2) {
+      newErrors.teamName = "Team name must be at least 2 characters"
+      hasErrors = true
     }
 
     // Team number validation
     if (!teamNumber.trim()) {
       newErrors.teamNumber = "Team number is required"
       hasErrors = true
+    } else {
+      const num = Number.parseInt(teamNumber)
+      if (isNaN(num) || num < 1 || num > 999) {
+        newErrors.teamNumber = "Team number must be between 1 and 999"
+        hasErrors = true
+      }
     }
 
     // Password validation
     if (!loginPassword.trim()) {
       newErrors.loginPassword = "Password is required"
+      hasErrors = true
+    } else if (loginPassword.length < 6) {
+      newErrors.loginPassword = "Password must be at least 6 characters"
       hasErrors = true
     }
 
@@ -262,7 +282,7 @@ export default function LoginPage() {
                 <input
                   type={showLoginPassword ? "text" : "password"}
                   value={loginPassword}
-                  onChange={(e) => setLoginPassword(e.target.value)}
+                  onChange={handlePasswordChange}
                   className={`w-full px-4 py-3 sm:py-4 pr-12 bg-gradient-to-b from-${currentTheme.accent}-900/90 to-black/90 
                              border-4 border-t-${currentTheme.accent}-600 border-l-${currentTheme.accent}-600 
                              border-r-black border-b-black

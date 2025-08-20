@@ -1,8 +1,6 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
-
 import { createClient } from '@/utils/supabase'
 
 export async function signup(formData: FormData) {
@@ -17,6 +15,7 @@ export async function signup(formData: FormData) {
       data: {
         team_number: formData.get('team-number') as string,
         team_name: formData.get('team-name') as string,
+        round: 1,
       }
     }
   }

@@ -289,36 +289,6 @@ export default function SignupPage() {
               )}
             </div>
 
-            {/* Team Name Input */}
-            <div className={`transition-all duration-1000 delay-300 ${showContent ? 'transform translate-y-0 opacity-100 scale-100' : 'transform translate-y-8 opacity-0 scale-95'}`}>
-              <label className={`block text-${currentTheme.accent}-200 font-minecraft text-xs sm:text-sm mb-2 tracking-wider uppercase`}>
-                Team Name
-              </label>
-              <input
-                type="text"
-                value={teamName}
-                onChange={handleTeamNameChange}
-                maxLength={50}
-                className={`w-full px-3 sm:px-4 py-3 sm:py-4 bg-gradient-to-b from-${currentTheme.accent}-900/90 to-black/90 
-                           border-4 border-t-${currentTheme.accent}-600 border-l-${currentTheme.accent}-600 
-                           border-r-black border-b-black
-                           hover:border-t-${currentTheme.accent}-500 hover:border-l-${currentTheme.accent}-500
-                           focus:border-t-${currentTheme.accent}-400 focus:border-l-${currentTheme.accent}-400
-                           focus:outline-none
-                           text-red-400 font-minecraft text-sm sm:text-base tracking-wider
-                           minecraft-block transition-all duration-300
-                           placeholder-red-600`}
-                placeholder="Enter your team name"
-                style={{ imageRendering: "pixelated" }}
-                autoComplete="off"
-              />
-              {errors.teamName && (
-                <p className="text-red-400 font-minecraft text-xs mt-2 tracking-wider animate-pulse flex items-center gap-2">
-                  <span>⚠</span> {errors.teamName}
-                </p>
-              )}
-            </div>
-
             {/* Password Input */}
             <div className={`transition-all duration-1000 delay-700 ${showContent ? 'transform translate-y-0 opacity-100 scale-100' : 'transform translate-y-8 opacity-0 scale-95'}`}>
               <label className={`block text-${currentTheme.accent}-200 font-minecraft text-xs sm:text-sm mb-2 tracking-wider uppercase`}>

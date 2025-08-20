@@ -51,6 +51,16 @@ export default function SignupPage() {
     }
   }, [])
 
+  // Lock body scroll on large screens so everything fits within viewport without page scroll
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (window.innerWidth >= 1024) { // lg breakpoint
+      const prev = document.body.style.overflow
+      document.body.style.overflow = 'hidden'
+      return () => { document.body.style.overflow = prev }
+    }
+  }, [])
+
   const handleTitleClick = () => {
     triggerPixelTransition('/')
   }
@@ -158,11 +168,7 @@ export default function SignupPage() {
         setUserExists(true)
         setSignupMessage(result.message)
       } else if (result?.success) {
-        // Registration successful, redirect to login
-        setSignupMessage("Team created successfully! Redirecting to login...")
-        setTimeout(() => {
-          triggerPixelTransition('/login')
-        }, 1500)
+        setSignupMessage("Team created successfully!")
       } else if (result?.error) {
         setSignupMessage(result.message || "Registration failed. Please try again.")
       }
@@ -178,7 +184,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="h-screen relative overflow-hidden lg:overflow-hidden">
       {/* Background */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-2000"
@@ -194,13 +200,15 @@ export default function SignupPage() {
       }`} />
 
       {/* Main Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center p-2 xs:p-4 sm:p-6 lg:p-8">
+      <div className="relative z-10 h-full flex items-center justify-center p-2 xs:p-4 sm:p-5 lg:p-6">
         <div className={`w-full max-w-md lg:max-w-lg transition-all duration-1500 ${
           showContent ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-95"
         }`}>
-          
+          <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-orange-500/40 via-red-600/30 to-red-800/40 backdrop-blur-sm shadow-[0_0_25px_-5px_rgba(255,100,40,0.35)] border border-white/10 overflow-hidden">
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-[radial-gradient(circle_at_30%_20%,rgba(255,180,90,0.25),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(255,60,40,0.2),transparent_65%)]" />
+            <div className="relative rounded-[inherit] px-5 sm:px-6 pt-6 sm:pt-7 pb-6 sm:pb-7 bg-black/65 backdrop-blur-xl">
           {/* Header */}
-          <div className="text-center mb-6 sm:mb-8">
+          <div className="text-center mb-5 sm:mb-6">
             <h1 
               className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-minecraft font-bold text-white mb-3 sm:mb-4 tracking-wider cursor-pointer hover:scale-105 transition-transform duration-300"
               onClick={handleTitleClick}
@@ -220,7 +228,7 @@ export default function SignupPage() {
             </p>
           </div>
 
-          <form onSubmit={handleSignup} className="space-y-4 sm:space-y-5">
+          <form onSubmit={handleSignup} className="space-y-3 sm:space-y-4">
             {/* Team Name Input */}
             <div className={`transition-all duration-1000 delay-300 ${showContent ? 'transform translate-y-0 opacity-100 scale-100' : 'transform translate-y-8 opacity-0 scale-95'}`}>
               <label className={`block text-${currentTheme.accent}-200 font-minecraft text-xs sm:text-sm mb-2 tracking-wider uppercase`}>
@@ -231,7 +239,7 @@ export default function SignupPage() {
                 value={teamName}
                 onChange={handleTeamNameChange}
                 maxLength={50}
-                className={`w-full px-3 sm:px-4 py-3 sm:py-4 bg-gradient-to-b from-${currentTheme.accent}-900/90 to-black/90 
+                className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-gradient-to-b from-${currentTheme.accent}-900/90 to-black/90 
                            border-4 border-t-${currentTheme.accent}-600 border-l-${currentTheme.accent}-600 
                            border-r-black border-b-black
                            hover:border-t-${currentTheme.accent}-500 hover:border-l-${currentTheme.accent}-500
@@ -261,7 +269,7 @@ export default function SignupPage() {
                 value={teamNumber}
                 onChange={handleTeamNumberChange}
                 maxLength={3}
-                className={`w-full px-3 sm:px-4 py-3 sm:py-4 bg-gradient-to-b from-${currentTheme.accent}-900/90 to-black/90 
+                className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-gradient-to-b from-${currentTheme.accent}-900/90 to-black/90 
                            border-4 border-t-${currentTheme.accent}-600 border-l-${currentTheme.accent}-600 
                            border-r-black border-b-black
                            hover:border-t-${currentTheme.accent}-500 hover:border-l-${currentTheme.accent}-500
@@ -306,7 +314,7 @@ export default function SignupPage() {
                   value={password}
                   onChange={handlePasswordChange}
                   maxLength={100}
-                  className={`w-full px-3 sm:px-4 py-3 sm:py-4 pr-10 sm:pr-12 bg-gradient-to-b from-${currentTheme.accent}-900/90 to-black/90 
+                  className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 sm:pr-12 bg-gradient-to-b from-${currentTheme.accent}-900/90 to-black/90 
                              border-4 border-t-${currentTheme.accent}-600 border-l-${currentTheme.accent}-600 
                              border-r-black border-b-black
                              hover:border-t-${currentTheme.accent}-500 hover:border-l-${currentTheme.accent}-500
@@ -345,7 +353,7 @@ export default function SignupPage() {
                   value={confirmPassword}
                   onChange={handleConfirmPasswordChange}
                   maxLength={100}
-                  className={`w-full px-3 sm:px-4 py-3 sm:py-4 pr-10 sm:pr-12 bg-gradient-to-b from-${currentTheme.accent}-900/90 to-black/90 
+                  className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 sm:pr-12 bg-gradient-to-b from-${currentTheme.accent}-900/90 to-black/90 
                              border-4 border-t-${currentTheme.accent}-600 border-l-${currentTheme.accent}-600 
                              border-r-black border-b-black
                              hover:border-t-${currentTheme.accent}-500 hover:border-l-${currentTheme.accent}-500
@@ -378,7 +386,7 @@ export default function SignupPage() {
               <button
                 type="submit"
                 disabled={isSigningUp}
-                className={`w-full py-3 sm:py-4 font-minecraft font-bold text-sm sm:text-base lg:text-lg tracking-wider
+                className={`w-full py-3 font-minecraft font-bold text-sm sm:text-base lg:text-lg tracking-wider
                            bg-gradient-to-b from-${currentTheme.accent}-400 via-${currentTheme.accent}-600 to-${currentTheme.accent}-800 
                            hover:from-${currentTheme.accent}-300 hover:via-${currentTheme.accent}-500 hover:to-${currentTheme.accent}-700
                            disabled:from-gray-600 disabled:via-gray-700 disabled:to-gray-800
@@ -462,6 +470,15 @@ export default function SignupPage() {
               </div>
             </div>
           )}
+            {/* Card corner accents */}
+            <div className="pointer-events-none absolute inset-0">
+              <div className="absolute -top-px -left-px w-10 h-10 border-l-2 border-t-2 border-amber-400/60 rounded-tl-xl" />
+              <div className="absolute -top-px -right-px w-10 h-10 border-r-2 border-t-2 border-red-400/60 rounded-tr-xl" />
+              <div className="absolute -bottom-px -left-px w-10 h-10 border-l-2 border-b-2 border-orange-500/50 rounded-bl-xl" />
+              <div className="absolute -bottom-px -right-px w-10 h-10 border-r-2 border-b-2 border-rose-500/50 rounded-br-xl" />
+            </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

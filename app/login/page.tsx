@@ -135,7 +135,7 @@ export default function LoginPage() {
       } else if (result?.error === 'WRONG_TEAM_NAME') {
         setErrors({ ...errors, teamName: result.message })
         setLoginMessage("")
-      }
+  }
       // If login is successful, the server action will redirect
     } catch (error) {
       console.error('Login error:', error)
@@ -173,7 +173,11 @@ export default function LoginPage() {
         <div className={`w-full max-w-md transition-all duration-1500 ${
           showContent ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-95"
         }`}>
-          <div className="text-center mb-8 sm:mb-12">
+          {/* Card Shell */}
+          <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-orange-500/40 via-red-600/30 to-red-800/40 backdrop-blur-sm shadow-[0_0_25px_-5px_rgba(255,100,40,0.35)] border border-white/10 overflow-hidden">
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-[radial-gradient(circle_at_30%_20%,rgba(255,180,90,0.25),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(255,60,40,0.2),transparent_65%)]" />
+            <div className="relative rounded-[inherit] px-5 sm:px-7 pt-8 sm:pt-10 pb-8 sm:pb-10 bg-black/65 backdrop-blur-xl">
+          <div className="text-center mb-8 sm:mb-10">
             <h1 
               className="text-2xl sm:text-4xl font-minecraft font-bold text-white mb-4 tracking-wider cursor-pointer hover:scale-105 transition-transform duration-200"
               onClick={handleGoHome}
@@ -397,6 +401,15 @@ export default function LoginPage() {
               </div>
             </div>
           )}
+            {/* Card corner accents */}
+            <div className="pointer-events-none absolute inset-0">
+              <div className="absolute -top-px -left-px w-10 h-10 border-l-2 border-t-2 border-amber-400/60 rounded-tl-xl" />
+              <div className="absolute -top-px -right-px w-10 h-10 border-r-2 border-t-2 border-red-400/60 rounded-tr-xl" />
+              <div className="absolute -bottom-px -left-px w-10 h-10 border-l-2 border-b-2 border-orange-500/50 rounded-bl-xl" />
+              <div className="absolute -bottom-px -right-px w-10 h-10 border-r-2 border-b-2 border-rose-500/50 rounded-br-xl" />
+            </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

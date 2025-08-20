@@ -1,7 +1,6 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { createClient } from '@/utils/supabase'
 
@@ -59,7 +58,7 @@ export async function login(formData: FormData) {
     throw new Error(error.message)
   }
 
-  // Redirect to dashboard after successful login and team name verification
+  // Return success so client can trigger pixel transition animation
   revalidatePath('/', 'layout')
-  redirect('/dashboard')
+  return { success: true }
 }

@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function DashboardPage() {
   return (
-    <div className="relative z-10 px-4 pt-24 pb-32 max-w-5xl mx-auto text-white">
+  <div className="relative z-10 px-4 pt-24 pb-32 max-w-5xl mx-auto text-white animate-[fadeInUp_0.8s_ease]">
       <h1 className="text-4xl md:text-5xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-400 to-red-500 drop-shadow-[0_0_6px_rgba(255,120,50,0.5)]">Team Dashboard</h1>
       <p className="mt-4 text-white/75 max-w-prose text-sm md:text-base leading-relaxed">Welcome to your Nether control center. Use the Minecraft-styled menu to open progress, stats, leaderboard, profile, and instructions pages. Each area lives on its own page for clarity. Your journey awaits.</p>
       <div className="mt-10 grid gap-6 sm:grid-cols-2">

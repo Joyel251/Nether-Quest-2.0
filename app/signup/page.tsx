@@ -168,7 +168,10 @@ export default function SignupPage() {
         setUserExists(true)
         setSignupMessage(result.message)
       } else if (result?.success) {
-        setSignupMessage("Team created successfully!")
+        setSignupMessage("Team created successfully! Redirecting to login...")
+        setTimeout(() => {
+          triggerPixelTransition('/login')
+        }, 1500)
       } else if (result?.error) {
         setSignupMessage(result.message || "Registration failed. Please try again.")
       }

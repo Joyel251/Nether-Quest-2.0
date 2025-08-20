@@ -109,7 +109,6 @@ export default function LoginPage() {
     try {
       const result = await login(formData)
       setIsLoggingIn(false)
-      
       if (result?.error === 'WRONG_PASSWORD') {
         setLoginMessage(result.message)
       } else if (result?.error === 'USER_NOT_EXISTS') {
@@ -118,8 +117,10 @@ export default function LoginPage() {
       } else if (result?.error === 'WRONG_TEAM_NAME') {
         setErrors({ ...errors, teamName: result.message })
         setLoginMessage("")
-  }
-      // If login is successful, the server action will redirect
+      } else if (result?.success) {
+        // Pixel transition to dashboard
+        triggerPixelTransition('/dashboard')
+      }
     } catch (error) {
       console.error('Login error:', error)
       setIsLoggingIn(false)

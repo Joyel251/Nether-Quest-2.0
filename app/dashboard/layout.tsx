@@ -4,7 +4,8 @@ import { triggerPixelTransition } from '@/components/PageTransition';
 import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import TeamAvatar from '@/components/TeamAvatar';
+import dynamic from 'next/dynamic';
+const TeamAvatar = dynamic(() => import('@/components/TeamAvatar'), { ssr: false });
 import { usePathname } from 'next/navigation';
 
 interface NavItem {

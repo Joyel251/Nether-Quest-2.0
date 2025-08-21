@@ -3,7 +3,11 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import TeamAvatar from "@/components/TeamAvatar"
+import dynamic from 'next/dynamic'
+const TeamAvatar = dynamic(() => import('@/components/TeamAvatar'), {
+  ssr: false,
+  loading: () => <div className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-full bg-gradient-to-br from-orange-500/30 to-red-700/30 border-2 border-orange-400/40 animate-pulse" />
+})
 import { triggerPixelTransition } from "@/components/PageTransition"
 import { signup } from "./actions"
 
@@ -251,7 +255,7 @@ export default function SignupPage() {
                            text-red-400 font-minecraft text-sm sm:text-base tracking-wider
                            minecraft-block transition-all duration-300
                            placeholder-red-600`}
-                placeholder="Enter your team name"
+                placeholder="+"
                 style={{ imageRendering: "pixelated" }}
                 autoComplete="off"
               />

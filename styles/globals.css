@@ -329,7 +329,7 @@
       0 0 8px currentColor,
       0 0 12px currentColor,
       inset 0 0 4px rgba(255, 255, 255, 0.5);
-  }
+  } 
 }
 
 .pixel-transition__pixel.glowing {

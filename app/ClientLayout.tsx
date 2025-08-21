@@ -2,8 +2,9 @@
 
 import type React from "react"
 import { useEffect, useRef } from "react"
-import ClickSpark from "../components/ClickSpark"
-import PageTransition from "../components/PageTransition"
+import dynamic from 'next/dynamic'
+const ClickSpark = dynamic(() => import('../components/ClickSpark'), { ssr: false })
+const PageTransition = dynamic(() => import('../components/PageTransition'), { ssr: false })
 import "../styles/globals.css"
 
 // Removed Next.js font optimization as it conflicts with custom font

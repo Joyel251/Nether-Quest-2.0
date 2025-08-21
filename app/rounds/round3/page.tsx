@@ -1,6 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import BackButton from "@/components/BackButton"
 
 export default function round3() {
   const router = useRouter()
@@ -11,16 +12,9 @@ export default function round3() {
       <div className="absolute inset-0 mix-blend-overlay opacity-25 bg-[url('/minecraft-sword-cursor.png')] bg-[length:160px_160px] animate-slow-pan" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(45deg,rgba(255,120,40,0.05)_0%,transparent_50%,rgba(255,50,20,0.05)_100%)]" />
       
-      {/* Back button */}
-      <button
-        onClick={() => router.push('/dashboard/progress')}
-        className="fixed top-4 left-4 z-10 p-3 rounded-md bg-black/60 border border-white/20 hover:bg-black/80 transition-all duration-300 group"
-        aria-label="Back to Progress"
-      >
-        <svg className="w-5 h-5 text-amber-300 group-hover:text-amber-200 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
+      <div className="fixed top-4 left-4 z-20">
+        <BackButton variant="label" />
+      </div>
 
       <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
         <div className="max-w-2xl w-full text-center">

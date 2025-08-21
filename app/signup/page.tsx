@@ -255,7 +255,7 @@ export default function SignupPage() {
                            text-red-400 font-minecraft text-sm sm:text-base tracking-wider
                            minecraft-block transition-all duration-300
                            placeholder-red-600`}
-                placeholder="+"
+                placeholder="Enter your team name"
                 style={{ imageRendering: "pixelated" }}
                 autoComplete="off"
               />

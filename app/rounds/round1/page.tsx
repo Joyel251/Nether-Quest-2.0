@@ -3,6 +3,8 @@
 import React, { useState } from "react"
 import { toast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
+import useQuestion from "./useQuestion"
+import { validateAnswer } from "./action"
 import BackButton from "@/components/BackButton"
 
 export default function round1() {
@@ -12,16 +14,19 @@ export default function round1() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const router = useRouter()
 
-  const correctAnswer = "obsidian"
+  const { question, error, loading } = useQuestion();
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!answer.trim()) return
     setSubmitting(true)
     setIsSubmitted(true); // Mark as submitted
 
+    const formData = new FormData();
+    formData.append('answer', answer.trim().toUpperCase());
+
     // simple client-side check to trigger UI feedback
-    const isCorrect = answer.trim().toLowerCase() === correctAnswer
+    const isCorrect = await validateAnswer(formData) || false;
 
     if (isCorrect) {
       setAnswerStatus('correct');
@@ -39,18 +44,14 @@ export default function round1() {
         variant: "destructive",
         className: "bg-red-900/90 border-red-500/50 text-red-100",
       })
+      setSubmitting(false);
     }
 
-    // small UX delay so the toast is visible after press
-    setTimeout(() => {
-      setSubmitting(false);
-      // Only clear answer and status if it was wrong
-      if (!isCorrect) {
-        setAnswer("");
-        setAnswerStatus(null);
-        setIsSubmitted(false);
-      }
-    }, 1500);
+    if (!isCorrect) {
+      setAnswer("");
+      setAnswerStatus(null);
+      setIsSubmitted(false);
+    }
   }
 
   return (
@@ -97,7 +98,10 @@ export default function round1() {
                 <div className="flex-1">
                   <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Question</h2>
                   <p className="text-base sm:text-lg lg:text-xl text-white/90 leading-relaxed">
-                    Which block is required to craft a Nether portal?
+                    {loading ? (<span>Loading...</span>) : (
+                      <span>{question}</span>
+                    )}
+                    {error && <span className="text-red-500">{"error"}</span>}
                   </p>
                 </div>
               </div>

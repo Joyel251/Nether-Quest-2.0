@@ -1,5 +1,5 @@
 'use client'
-
+export const dynamic = 'force-dynamic'
 import { useState, useEffect } from "react"
 import { toast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"

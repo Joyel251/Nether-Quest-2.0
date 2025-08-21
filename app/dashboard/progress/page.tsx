@@ -1,10 +1,11 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import resolveRound from './resolve';
 
 interface RoundInfo { round: number; status: 'locked' | 'unlocked' | 'completed'; }
 const initialRounds: RoundInfo[] = Array.from({ length: 8 }, (_, i) => ({
   round: i + 1,
-  status: i === 0 ? 'unlocked' : 'locked'
+  status: i===0 ? 'unlocked' : 'locked'
 }));
 
 const roundColors: Record<RoundInfo['status'], string> = {
@@ -14,16 +15,20 @@ const roundColors: Record<RoundInfo['status'], string> = {
 };
 
 export default function ProgressPage() {
+  
+  const {round, error, loading} = resolveRound();
+
   const [rounds, setRounds] = useState<RoundInfo[]>(initialRounds);
 
   useEffect(() => {
-    // Demo auto-complete first round after 2.5s (remove when real data wired)
-    const t = setTimeout(() => {
-      setRounds(r => r.map(ri => ri.round === 1 ? { ...ri, status: 'completed' } : ri));
-      setRounds(r => r.map(ri => ri.round === 2 ? { ...ri, status: 'unlocked' } : ri));
-    }, 2500);
-    return () => clearTimeout(t);
-  }, []);
+    if (round && typeof round === 'number') {
+      const updatedRounds = initialRounds.map(r => ({
+        ...r,
+        status: r.round < round ? 'unlocked' : r.round === round ? 'unlocked' : 'locked'
+      }));
+      setRounds(updatedRounds as RoundInfo[]);
+    }
+  }, [round]);
 
   const roundStatusIcon = (status: RoundInfo['status']) => {
     switch (status) {

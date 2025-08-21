@@ -14,10 +14,19 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Team {
-  id          String   @id @default(cuid())
-  teamName    String   @unique
-  password    String
+model Round1 {
+  id          String  @id @default(cuid())
+  teamNumber  Int     @unique
+  question    String
+  answer      String
+  Submitted   Boolean @default(false)
 
-  @@map("teams")
+  @@map("round1")
+}
+
+model Round1Submission {
+  id          String  @id @default(cuid())
+  teamNumber  Int     @unique
+
+  @@map("round1Submission")  
 }

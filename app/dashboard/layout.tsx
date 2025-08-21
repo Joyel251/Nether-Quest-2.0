@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { triggerPixelTransition } from '@/components/PageTransition';
 import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
 import TeamAvatar from '@/components/TeamAvatar';
 import { usePathname } from 'next/navigation';
 

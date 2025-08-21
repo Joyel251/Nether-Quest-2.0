@@ -85,11 +85,33 @@ const config: Config = {
   				to: {
   					height: '0'
   				}
-  			}
+  			},
+  			'fade-in': {
+  				from: { opacity: '0' },
+  				to: { opacity: '1' },
+  			},
+  			'fade-in-up': {
+  				from: { opacity: '0', transform: 'translateY(20px)' },
+  				to: { opacity: '1', transform: 'translateY(0)' },
+  			},
+  			'pulse-green': {
+  				'0%': { boxShadow: '0 0 0 0 rgba(50, 200, 50, 0.7)' },
+  				'70%': { boxShadow: '0 0 0 10px rgba(50, 200, 50, 0)' },
+  				'100%': { boxShadow: '0 0 0 0 rgba(50, 200, 50, 0)' },
+  			},
+  			'shake': {
+  				'0%, 100%': { transform: 'translateX(0)' },
+  				'10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-5px)' },
+  				'20%, 40%, 60%, 80%': { transform: 'translateX(5px)' },
+  			},
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
-  			'accordion-up': 'accordion-up 0.2s ease-out'
+  			'accordion-up': 'accordion-up 0.2s ease-out',
+  			'fade-in': 'fade-in 0.8s ease-out forwards',
+  			'fade-in-up': 'fade-in-up 0.6s ease-out forwards',
+  			'pulse-green': 'pulse-green 1.5s ease-out forwards',
+  			'shake': 'shake 0.5s ease-in-out',
   		}
   	}
   },

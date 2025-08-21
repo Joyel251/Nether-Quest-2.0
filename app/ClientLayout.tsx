@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react"
 import dynamic from 'next/dynamic'
 const ClickSpark = dynamic(() => import('../components/ClickSpark'), { ssr: false })
 const PageTransition = dynamic(() => import('../components/PageTransition'), { ssr: false })
+import { Toaster } from '../components/ui/toaster'
 import "../styles/globals.css"
 
 // Removed Next.js font optimization as it conflicts with custom font
@@ -39,6 +40,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <ClickSpark sparkColor="#FFD700" sparkSize={15} sparkRadius={25} sparkCount={12} duration={600}>
         {children}
       </ClickSpark>
+      <Toaster />
     </PageTransition>
   )
 }

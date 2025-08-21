@@ -7,7 +7,7 @@ export default function round3() {
 
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden text-white font-minecraft bg-[url('/dashboardbg.webp')] bg-cover bg-center bg-fixed">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(10,0,0,0.15),rgba(0,0,0,0.9))]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(10,0,0,0.15),rgba(0,0,0,0.9))] animation-fade-in" />
       <div className="absolute inset-0 mix-blend-overlay opacity-25 bg-[url('/minecraft-sword-cursor.png')] bg-[length:160px_160px] animate-slow-pan" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(45deg,rgba(255,120,40,0.05)_0%,transparent_50%,rgba(255,50,20,0.05)_100%)]" />
       
@@ -24,7 +24,8 @@ export default function round3() {
 
       <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
         <div className="max-w-2xl w-full text-center">
-          <div className="bg-gradient-to-br from-zinc-950/90 to-black/85 border border-white/10 backdrop-blur-xl rounded-3xl p-8 sm:p-12 shadow-2xl">
+          <div className="relative bg-gradient-to-br from-zinc-950/90 to-black/85 border border-white/10 backdrop-blur-xl rounded-3xl p-8 sm:p-12 shadow-2xl overflow-hidden">
+             <div className="absolute inset-0 bg-purple-500/10 opacity-20 z-0 animate-[fade-in_1s_ease-out]"></div>
             <div className="inline-flex items-center gap-4 mb-8">
               <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
                 <span className="text-3xl font-bold text-white">3</span>

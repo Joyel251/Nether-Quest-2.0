@@ -1,9 +1,9 @@
 'use client'
-export const dynamic = 'force-dynamic'
+
 import { useState, useEffect } from "react"
 import { toast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
-import BackButton from "@/components/BackButton"
+//import BackButton from "@/components/BackButton"
 
 export default function Round2() {
   const [answer, setAnswer] = useState("")
@@ -86,7 +86,7 @@ export default function Round2() {
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(45deg,rgba(255,120,40,0.05)_0%,transparent_50%,rgba(255,50,20,0.05)_100%)]" />
       
       <div className="fixed top-4 left-4 z-20">
-        <BackButton variant="icon" />
+        {/* <BackButton variant="icon" /> */}
       </div>
 
       <div className="relative z-10 px-4 py-8 sm:py-16 lg:py-24 max-w-6xl mx-auto">

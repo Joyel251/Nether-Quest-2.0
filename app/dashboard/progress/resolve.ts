@@ -2,7 +2,6 @@
 import { fetchRound } from "./actions";
 import { useEffect, useState } from "react";
 
-
 export default function resolveRound() {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);

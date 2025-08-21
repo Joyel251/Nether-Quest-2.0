@@ -155,8 +155,6 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
 
-    console.log("[v0] Click registered at:", x, y) // Debug log
-
     const now = performance.now()
     const newSparks: Spark[] = Array.from({ length: sparkCount }, (_, i) => ({
       x,

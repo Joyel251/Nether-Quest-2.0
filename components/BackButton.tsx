@@ -17,17 +17,22 @@ export default function BackButton({
   const router = useRouter();
 
   const base =
-    "group focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60 transition-all disabled:opacity-60 disabled:cursor-not-allowed";
+    "group focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60 transition-all disabled:opacity-60 disabled:cursor-not-allowed touch-manipulation select-none";
   const styles =
     variant === "icon"
-      ? "p-3 rounded-md bg-black/60 border border-white/20 hover:bg-black/80 backdrop-blur-sm"
-      : "pl-3 pr-4 py-2 rounded-xl bg-black/55 hover:bg-black/75 border border-white/15 hover:border-white/30 inline-flex items-center gap-2 text-sm sm:text-base font-medium backdrop-blur-md";
+      ? "p-3 rounded-md bg-black/60 border border-white/20 hover:bg-black/80 active:bg-black/90 backdrop-blur-sm"
+      : "pl-3 pr-4 py-2 rounded-xl bg-black/55 hover:bg-black/75 active:bg-black/85 border border-white/15 hover:border-white/30 inline-flex items-center gap-2 text-sm sm:text-base font-medium backdrop-blur-md";
+
+  const handleClick = () => {
+    router.push(href);
+  };
 
   return (
     <button
       type="button"
       aria-label="Back to progress"
-      onClick={() => router.push(href)}
+      onClick={handleClick}
+      onTouchEnd={handleClick}
       className={`${base} ${styles} ${className}`}
     >
       <svg

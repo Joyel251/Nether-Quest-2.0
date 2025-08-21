@@ -74,7 +74,7 @@ export async function getQuestion() {
             return { redirect: '/redirect' };
         }
 
-        return { question: res.question };
+        return { question: res.question, clue: res.clue };
     } catch (error) {
         console.error('Server error in getQuestion:', error);
         return { error: 'Internal server error' };

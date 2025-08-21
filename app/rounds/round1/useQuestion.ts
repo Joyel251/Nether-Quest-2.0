@@ -6,6 +6,7 @@ import { getQuestion } from "./action";
 
 interface QuestionState {
   question: string | null;
+  clue: string | null;
   loading: boolean;
   error: string | null;
   shouldRedirect: boolean;
@@ -15,6 +16,7 @@ interface QuestionState {
 export default function useQuestion() {
   const [state, setState] = useState<QuestionState>({
     question: null,
+    clue: null,
     loading: true,
     error: null,
     shouldRedirect: false,
@@ -54,6 +56,7 @@ export default function useQuestion() {
         setState(prev => ({
           ...prev,
           question: response.question,
+          clue: response.clue,
           loading: false,
         }));
 
@@ -84,6 +87,7 @@ export default function useQuestion() {
 
   return {
     question: state.question,
+    clue: state.clue,
     loading: state.loading,
     error: state.error,
     isRedirecting: state.shouldRedirect,

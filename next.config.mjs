@@ -9,13 +9,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  experimental: {
-    missingSuspenseWithCSRBailout: false,
-  },
-  // Skip static generation for problematic routes
-  async rewrites() {
-    return []
-  }
 }
 
 export default nextConfig

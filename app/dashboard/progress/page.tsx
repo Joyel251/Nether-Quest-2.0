@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import resolveRound from './resolve';
 
 interface RoundInfo { round: number; status: 'locked' | 'unlocked' | 'completed'; }
@@ -17,6 +18,7 @@ const roundColors: Record<RoundInfo['status'], string> = {
 export default function ProgressPage() {
   
   const {round, error, loading} = resolveRound();
+  const router = useRouter();
 
   const [rounds, setRounds] = useState<RoundInfo[]>(initialRounds);
 
@@ -29,6 +31,11 @@ export default function ProgressPage() {
       setRounds(updatedRounds as RoundInfo[]);
     }
   }, [round]);
+
+  const handleRoundClick = (roundNumber: number, status: RoundInfo['status']) => {
+    if (status === 'locked') return;
+    router.push(`/rounds/round${roundNumber}`);
+  };
 
   const roundStatusIcon = (status: RoundInfo['status']) => {
     switch (status) {
@@ -54,6 +61,7 @@ export default function ProgressPage() {
               <div className="mt-3">
                 <button
                   disabled={r.status === 'locked'}
+                  onClick={() => handleRoundClick(r.round, r.status)}
                   className={`w-full py-1.5 rounded-md text-xs font-semibold border transition-colors ${r.status === 'locked' ? 'border-stone-700 text-stone-500 cursor-not-allowed' : r.status === 'unlocked' ? 'border-amber-400 text-amber-200 hover:bg-amber-600/30' : 'border-emerald-400 text-emerald-200 hover:bg-emerald-600/30'}`}
                 >
                   {r.status === 'completed' ? 'View Summary' : r.status === 'unlocked' ? 'Enter Round' : 'Locked'}

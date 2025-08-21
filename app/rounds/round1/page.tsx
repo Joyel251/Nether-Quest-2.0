@@ -14,7 +14,7 @@ export default function round1() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const router = useRouter()
 
-  const { question, error, loading } = useQuestion();
+  const { question, error, loading, isRedirecting } = useQuestion();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -101,7 +101,7 @@ export default function round1() {
                     {loading ? (<span>Loading...</span>) : (
                       <span>{question}</span>
                     )}
-                    {error && <span className="text-red-500">{"error"}</span>}
+                    {error && !isRedirecting && <span className="text-red-500">{"error"}</span>}
                   </p>
                 </div>
               </div>

@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import React, { useState } from "react"
+import { useState } from "react"
 import { toast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import useQuestion from "./useQuestion"
 import { validateAnswer } from "./action"
-import { BackButton } from "@/components/BackButton"
+import BackButton from "@/components/BackButton"
 
 export default function round1() {
   const [answer, setAnswer] = useState("")

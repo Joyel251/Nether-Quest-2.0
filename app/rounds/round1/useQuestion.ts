@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getQuestion } from "./action";
-import { ro } from "date-fns/locale";
 
 interface QuestionState {
   question: string | null;
@@ -34,7 +33,6 @@ export default function useQuestion() {
         if (!isMounted) return;
 
         if (response.redirect === '/redirect') {
-            router.push('/redirect');
             setState(prev => ({
               ...prev,
               question: null,

@@ -1,7 +1,6 @@
 'use server'
 import { createClient } from '@/utils/supabase'
 import prisma from '@/utils/prisma';
-import { redirect } from 'next/navigation';
 
 export async function validateAnswer(formData: FormData) {
     try {
@@ -73,19 +72,16 @@ export async function getQuestion() {
             throw new Error('Team not found');
         }
 
-        if (res.Submitted == true) {
-            redirect('/redirect');
+        if (res.Submitted === true) {
+            return { redirect: '/redirect' };
         }
 
          return { question: res.question };
-    } catch (error) {
-        if (error && typeof error === 'object' && 'digest' in error && (error as any).digest?.startsWith('NEXT_REDIRECT')) {
-            throw error;
-        }
-        console.error('An error occurred in getQuestion:', error);
+    } catch (error : any) {
+        console.error('An unexpected error occurred in getQuestion:', error);
         return {
             question: null,
-            error: 'Failed to load the question due to a server error.',
+            error: 'Failed to load the question due to an unexpected server error.',
         };
     }
 }

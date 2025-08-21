@@ -1,57 +1,93 @@
-"use client"
+'use client'
 
-import React, { useState } from "react"
+import { useState, useEffect } from "react"
 import { toast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import useQuestion from "./useQuestion"
 import { validateAnswer } from "./action"
-import BackButton from "@/components/BackButton"
+//import BackButton from "@/components/BackButton"
 
-export default function round1() {
+export default function Round1() {
   const [answer, setAnswer] = useState("")
   const [submitting, setSubmitting] = useState(false)
-  const [answerStatus, setAnswerStatus] = useState<'correct' | 'wrong' | null>(null);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [answerStatus, setAnswerStatus] = useState<'correct' | 'wrong' | null>(null)
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const router = useRouter()
 
-  const { question, error, loading } = useQuestion();
+  const { question, error, loading, isRedirecting } = useQuestion()
+
+  // Ensure component is mounted before using router
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!answer.trim()) return
     setSubmitting(true)
-    setIsSubmitted(true); // Mark as submitted
+    setIsSubmitted(true)
 
-    const formData = new FormData();
-    formData.append('answer', answer.trim().toUpperCase());
+    const formData = new FormData()
+    formData.append('answer', answer.trim().toUpperCase())
 
-    // simple client-side check to trigger UI feedback
-    const isCorrect = await validateAnswer(formData) || false;
+    try {
+      const isCorrect = await validateAnswer(formData) || false
 
-    if (isCorrect) {
-      setAnswerStatus('correct');
+      if (isCorrect) {
+        setAnswerStatus('correct')
+        toast({
+          title: "🎉 Correct Answer!",
+          description: "Excellent! Obsidian is indeed required to craft a Nether portal.",
+          className: "bg-emerald-900/90 border-emerald-500/50 text-emerald-100",
+        })
+        
+        // Only redirect if component is mounted
+        if (mounted) {
+          setTimeout(() => {
+            router.push('/dashboard/progress')
+          }, 1000)
+        }
+      } else {
+        setAnswerStatus('wrong')
+        toast({
+          title: "❌ Wrong Answer",
+          description: "That's not quite right. Think about the dark volcanic glass block!",
+          variant: "destructive",
+          className: "bg-red-900/90 border-red-500/50 text-red-100",
+        })
+        
+        setTimeout(() => {
+          setSubmitting(false)
+          setAnswer("")
+          setAnswerStatus(null)
+          setIsSubmitted(false)
+        }, 1500)
+      }
+    } catch (err) {
+      console.error('Validation error:', err)
+      setSubmitting(false)
+      setIsSubmitted(false)
       toast({
-        title: "🎉 Correct Answer!",
-        description: "Excellent! Obsidian is indeed required to craft a Nether portal.",
-        className: "bg-emerald-900/90 border-emerald-500/50 text-emerald-100",
-      });
-      router.push('/dashboard/progress'); // Redirect immediately
-    } else {
-      setAnswerStatus('wrong');
-      toast({
-        title: "❌ Wrong Answer",
-        description: "That's not quite right. Think about the dark volcanic glass block!",
+        title: "Error",
+        description: "Something went wrong. Please try again.",
         variant: "destructive",
-        className: "bg-red-900/90 border-red-500/50 text-red-100",
       })
-      setSubmitting(false);
     }
+  }
 
-    if (!isCorrect) {
-      setAnswer("");
-      setAnswerStatus(null);
-      setIsSubmitted(false);
-    }
+  // Don't render until mounted to avoid hydration mismatches
+  if (!mounted) {
+    return (
+      <div className="relative min-h-screen w-full overflow-x-hidden text-white font-minecraft bg-[url('/dashboardbg.webp')] bg-cover bg-center bg-fixed">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(10,0,0,0.15),rgba(0,0,0,0.9))] animation-fade-in" />
+        <div className="relative z-10 px-4 py-8 sm:py-16 lg:py-24 max-w-6xl mx-auto">
+          <div className="flex items-center justify-center">
+            <div className="text-white">Loading...</div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -61,7 +97,7 @@ export default function round1() {
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(45deg,rgba(255,120,40,0.05)_0%,transparent_50%,rgba(255,50,20,0.05)_100%)]" />
       
       <div className="fixed top-4 left-4 z-20">
-        <BackButton variant="icon" />
+        {/* <BackButton variant="icon" /> */}
       </div>
 
       <div className="relative z-10 px-4 py-8 sm:py-16 lg:py-24 max-w-6xl mx-auto">
@@ -84,12 +120,12 @@ export default function round1() {
 
           {/* Question Card */}
           <div className="relative bg-gradient-to-br from-zinc-950/90 to-black/85 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 lg:p-10 shadow-2xl mb-8 overflow-hidden">
-             {answerStatus === 'correct' && (
-                <div className="absolute inset-0 bg-emerald-500/10 animate-[pulse-green_1.5s_ease-out_forwards] z-0"></div>
-              )}
-              {answerStatus === 'wrong' && (
-                <div className="absolute inset-0 bg-red-500/10 animate-[shake_0.5s_ease-in-out] z-0"></div>
-              )}
+            {answerStatus === 'correct' && (
+              <div className="absolute inset-0 bg-emerald-500/10 animate-[pulse-green_1.5s_ease-out_forwards] z-0"></div>
+            )}
+            {answerStatus === 'wrong' && (
+              <div className="absolute inset-0 bg-red-500/10 animate-[shake_0.5s_ease-in-out] z-0"></div>
+            )}
             <div className="relative z-10 space-y-6 sm:space-y-8">
               <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -98,10 +134,13 @@ export default function round1() {
                 <div className="flex-1">
                   <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Question</h2>
                   <p className="text-base sm:text-lg lg:text-xl text-white/90 leading-relaxed">
-                    {loading ? (<span>Loading...</span>) : (
+                    {loading ? (
+                      <span>Loading...</span>
+                    ) : error && !isRedirecting ? (
+                      <span className="text-red-500">Error loading question</span>
+                    ) : (
                       <span>{question}</span>
                     )}
-                    {error && <span className="text-red-500">{"error"}</span>}
                   </p>
                 </div>
               </div>
@@ -115,9 +154,9 @@ export default function round1() {
                     id="answer"
                     value={answer}
                     onChange={(e) => {
-                      setAnswer(e.target.value);
-                      if (answerStatus) setAnswerStatus(null); // Clear status on new input
-                      if (isSubmitted) setIsSubmitted(false); // Clear submitted status on new input
+                      setAnswer(e.target.value)
+                      if (answerStatus) setAnswerStatus(null)
+                      if (isSubmitted) setIsSubmitted(false)
                     }}
                     placeholder="Type your answer here..."
                     className={`w-full rounded-xl border bg-black/40 backdrop-blur-sm px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg text-white placeholder:text-white/50 focus:outline-none transition-all duration-300
@@ -168,7 +207,7 @@ export default function round1() {
 
           {/* Info Card */}
           <div className="relative bg-black/20 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/10 overflow-hidden shadow-xl">
-             <div className="absolute inset-0 bg-blue-500/10 opacity-20 z-0 animate-[fade-in_1s_ease-out]"></div>
+            <div className="absolute inset-0 bg-blue-500/10 opacity-20 z-0 animate-[fade-in_1s_ease-out]"></div>
             <div className="relative z-10 flex items-start gap-3 sm:gap-4">
               <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
                 <span className="text-blue-400 text-lg">ℹ</span>

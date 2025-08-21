@@ -9,7 +9,7 @@ interface BackButtonProps {
   href?: string; // default destination
 }
 
-export function BackButton({
+export default function BackButton({
   variant = "icon",
   className = "",
   href = "/dashboard/progress",
@@ -47,5 +47,3 @@ export function BackButton({
     </button>
   );
 }
-
-export default BackButton;

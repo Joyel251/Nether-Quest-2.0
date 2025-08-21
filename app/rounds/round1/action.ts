@@ -1,51 +1,44 @@
 'use server'
 import { createClient } from '@/utils/supabase'
 import prisma from '@/utils/prisma';
+import { redirect } from 'next/navigation';
 
 export async function validateAnswer(formData: FormData) {
-    try {
-        let givenAnswer = formData.get('answer') as string;
 
-        const supabase = await createClient();
+    let givenAnswer = formData.get('answer') as string;
+    const supabase = await createClient();
 
-        const { data: { user },} = await supabase.auth.getUser();
-        
-        if (!user) {
-            throw new Error('User not authenticated');
-        }
+    const {
+    data: { user },
+    } = await supabase.auth.getUser();
 
-        const teamNumber = Number(user.user_metadata.team_number);
+    const teamNumber = Number(user?.user_metadata.team_number);
 
-        let res = await prisma.round1.findFirst({
-                where: {
-                    teamNumber: teamNumber,
-                }
+    let res = await prisma.round1.findFirst({
+            where: {
+                teamNumber: teamNumber,
+            }
+    });
+
+    if (res?.answer === givenAnswer) {
+        let res = await prisma.round1.update({
+            where: {
+                teamNumber: teamNumber,
+            },
+            data: {
+                Submitted: true,
+            }
         });
 
-        if (!res) {
-            throw new Error('team not found');
-        }
+        let submission = await prisma.round1Submission.create({
+            data: {
+                teamNumber: teamNumber,
+            }
+        });
 
-        if (res.answer === givenAnswer) {
-
-            await prisma.$transaction([
-            prisma.round1.update({
-            where: { teamNumber: teamNumber },
-            data: { Submitted: true },
-            }),
-            prisma.round1Submission.create({
-            data: { teamNumber: teamNumber },
-            }),
-        ]);
-
-            return { success: true };
-        } else {
-            return { success: false, message: 'Incorrect answer' };
-        }
-    } catch (error) {
-        console.error('Error validating answer:', error);
-        return { success: false, message: "An unexpected error occurred" };
+        return true;
     }
+    return false;
 };
 
 export async function getQuestion() {

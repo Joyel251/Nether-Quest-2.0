@@ -10,8 +10,8 @@ export default function useQuestion() {
     useEffect(() => {
         async function getRound() {
             try {
-                const question = await getQuestion();
-                setQuestion(question);
+                const result = await getQuestion();
+                setQuestion(result.question ?? "");
             } catch (err) {
                 console.error('Error fetching question:', err);
                 setError(err as Error);

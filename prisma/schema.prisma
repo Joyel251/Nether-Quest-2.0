@@ -19,6 +19,7 @@ model Round1 {
   teamNumber  Int     @unique
   question    String
   answer      String
+  clue        String?
   Submitted   Boolean @default(false)
 
   @@map("round1")
@@ -30,4 +31,99 @@ model Round1Submission {
   submissionTime  DateTime  @default(now())
 
   @@map("round1Submission")  
+}
+
+model Round2 {
+  id          String  @id @default(cuid())
+  teamNumber  Int     @unique
+  question    String
+  answer      String
+  clue        String?
+  Submitted   Boolean @default(false)
+
+  @@map("round2")
+}
+
+model Round2Submission {
+  id              String    @id @default(cuid())
+  teamNumber      Int       @unique
+  submissionTime  DateTime  @default(now())
+
+  @@map("round2Submission")  
+}
+
+model Round3 {
+  id          String  @id @default(cuid())
+  teamNumber  Int     @unique
+  question    String
+  answer      String
+  clue        String?
+  Submitted   Boolean @default(false)
+
+  @@map("round3")
+}
+
+model Round3Submission {
+  id              String    @id @default(cuid())
+  teamNumber      Int       @unique
+  submissionTime  DateTime  @default(now())
+
+  @@map("round3Submission")  
+}
+
+model Round4 {
+  id          String  @id @default(cuid())
+  teamNumber  Int     @unique
+  question    String
+  answer      String
+  clue        String?
+  Submitted   Boolean @default(false)
+
+  @@map("round4")
+}
+
+model Round4Submission {
+  id              String    @id @default(cuid())
+  teamNumber      Int       @unique
+  submissionTime  DateTime  @default(now())
+
+  @@map("round4Submission")  
+}
+
+model Round5 {
+  id          String  @id @default(cuid())
+  teamNumber  Int     @unique
+  question    String
+  answer      String
+  clue        String?
+  Submitted   Boolean @default(false)
+
+  @@map("round5")
+}
+
+model Round5Submission {
+  id              String    @id @default(cuid())
+  teamNumber      Int       @unique
+  submissionTime  DateTime  @default(now())
+
+  @@map("round5Submission")  
+}
+
+model Round6 {
+  id          String  @id @default(cuid())
+  teamNumber  Int     @unique
+  question    String
+  answer      String
+  clue        String?
+  Submitted   Boolean @default(false)
+
+  @@map("round6")
+}
+
+model Round6Submission {
+  id              String    @id @default(cuid())
+  teamNumber      Int       @unique
+  submissionTime  DateTime  @default(now())
+
+  @@map("round6Submission")  
 }

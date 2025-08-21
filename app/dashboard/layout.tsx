@@ -1,9 +1,8 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { triggerPixelTransition } from '@/components/PageTransition';
 import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
 import dynamic from 'next/dynamic';
 const TeamAvatar = dynamic(() => import('@/components/TeamAvatar'), { ssr: false });
 import { usePathname } from 'next/navigation';
@@ -31,6 +30,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [teamNumber, setTeamNumber] = useState<number | null>(null);
   const [teamName, setTeamName] = useState<string | null>(null);
   const pathname = usePathname();
+  const sidebarRef = useRef<HTMLDivElement | null>(null);
+  const toggleBtnRef = useRef<HTMLButtonElement | null>(null);
+  
+  // Close with ESC for better desktop UX
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
 
   // Pull team data saved during login (we'll add storing if not already) from sessionStorage
   useEffect(() => {
@@ -49,6 +60,22 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     setOpen(false);
   }, [pathname]);
 
+  // Outside click for desktop (since overlay only shown on md:hidden)
+  useEffect(() => {
+    if (!open) return;
+    function handleClick(e: MouseEvent) {
+      if (window.innerWidth < 768) return; // mobile already handled by overlay
+      const sidebarEl = sidebarRef.current;
+      const toggleEl = toggleBtnRef.current;
+      if (!sidebarEl) return;
+      if (sidebarEl.contains(e.target as Node)) return;
+      if (toggleEl && toggleEl.contains(e.target as Node)) return;
+      setOpen(false);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [open]);
+
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden text-white font-minecraft bg-[url('/dashboardbg.webp')] bg-cover bg-center bg-fixed">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(10,0,0,0.15),rgba(0,0,0,0.9))]" />
@@ -57,6 +84,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Hamburger */}
       <button
+        ref={toggleBtnRef}
         onClick={() => setOpen(o => !o)}
         className={`fixed top-4 left-4 z-50 p-2 rounded-md bg-black/60 border border-white/20 hover:bg-black/80 transition-all duration-300 ${open ? 'opacity-0 pointer-events-none scale-90' : 'opacity-100 scale-100'}`}
         aria-label="Menu"
@@ -75,18 +103,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       )}
 
       {/* Sidebar / Drawer */}
-      <aside className={`fixed top-0 left-0 h-full w-72 bg-gradient-to-b from-zinc-950/95 to-black/95 border-r border-white/10 z-40 transform transition-transform duration-300 ${open ? 'translate-x-0' : '-translate-x-full'}`}>
+  <aside ref={sidebarRef} className={`fixed top-0 left-0 h-full w-72 bg-gradient-to-b from-zinc-950/95 to-black/95 border-r border-white/10 z-40 transform transition-transform duration-300 ${open ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="h-full flex flex-col">
           <div className="p-4 flex items-center gap-3 border-b border-white/10 relative">
             <Image src="/nether-quest-logo.png" alt="Logo" width={44} height={44} className="rounded" />
             <h1 className="text-xl font-bold tracking-wide text-amber-300 drop-shadow flex-1">NetherQuest</h1>
-            <button
-              onClick={() => setOpen(false)}
-              aria-label="Close menu"
-              className="p-1 rounded-md hover:bg-white/10 transition-colors absolute right-2 top-2 md:hidden"
-            >
-              <X className="w-5 h-5 text-white" />
-            </button>
+            {open && (
+              <button
+                onClick={() => setOpen(false)}
+                aria-label="Close sidebar"
+                className="p-1 rounded-md hover:bg-white/10 transition-colors absolute right-2 top-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
+              >
+                <X className="w-5 h-5 text-white" />
+              </button>
+            )}
           </div>
           {teamNumber !== null && (
             <div className="px-4 py-4 border-b border-white/10 flex items-center gap-4 bg-black/40 backdrop-blur-sm">
@@ -118,12 +148,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </nav>
           <div className="p-4 border-t border-white/10">
             <button
-              onClick={() => triggerPixelTransition('/login')}
-              className="w-full py-2 rounded-md bg-red-600/70 hover:bg-red-600 font-semibold text-sm tracking-wide shadow border border-white/20"
-            >Logout</button>
+              onClick={() => { setOpen(false); window.location.href='/login'; }}
+              className="w-full py-2 rounded-md bg-red-600/80 hover:bg-red-600 font-semibold text-sm tracking-wide shadow border border-white/25 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400"
+            >Sign Out</button>
           </div>
         </div>
       </aside>
+      {/* Desktop outside click (no overlay) */}
+      {open && (
+        <div aria-hidden="true" className="hidden md:block fixed inset-0 z-30" />
+      )}
       {/* Content wrapper with entrance animation */}
       <div className={`pl-0 md:pl-0 relative transition-all duration-700 ${animReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         {/* Faint vertical glow accents */}

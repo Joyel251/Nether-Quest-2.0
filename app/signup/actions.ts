@@ -6,10 +6,8 @@ import { createClient } from '@/utils/supabase'
 export async function signup(formData: FormData) {
   const supabase = await createClient()
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
   const data = {
-    email: "team" + formData.get('team-number') + "@supabase" as string,
+    email: "team" + Number(formData.get('team-number')) + "@supabase" as string,
     password: formData.get('password') as string,
     options: {
       data: {

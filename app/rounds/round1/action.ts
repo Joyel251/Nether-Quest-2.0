@@ -21,7 +21,7 @@ export async function validateAnswer(formData: FormData) {
     });
 
     if (res?.answer === givenAnswer) {
-        let res1 = await prisma.round1.update({
+        let res = await prisma.round1.update({
             where: {
                 teamNumber: teamNumber,
             },
@@ -30,7 +30,11 @@ export async function validateAnswer(formData: FormData) {
             }
         });
 
-        console.log('res', res1);
+        let submission = await prisma.round1Submission.create({
+            data: {
+                teamNumber: teamNumber,
+            }
+        });
 
         return true;
     }

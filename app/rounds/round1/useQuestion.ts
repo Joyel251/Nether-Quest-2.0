@@ -32,6 +32,10 @@ export default function useQuestion() {
 
         if (!isMounted) return;
 
+        if (response.error) {
+          throw new Error(response.error || 'Failed to fetch question');
+        }
+
         if (response.redirect === '/redirect') {
             setState(prev => ({
               ...prev,
@@ -43,7 +47,7 @@ export default function useQuestion() {
           return;
         }
 
-        if (response.error) {
+        if (!response.error) {
           throw new Error(response.error || 'Failed to fetch question');
         }
 

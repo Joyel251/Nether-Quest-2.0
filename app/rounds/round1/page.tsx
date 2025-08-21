@@ -5,6 +5,7 @@ import { toast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import useQuestion from "./useQuestion"
 import { validateAnswer } from "./action"
+import BackButton from "@/components/BackButton"
 
 export default function round1() {
   const [answer, setAnswer] = useState("")
@@ -60,15 +61,9 @@ export default function round1() {
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(45deg,rgba(255,120,40,0.05)_0%,transparent_50%,rgba(255,50,20,0.05)_100%)]" />
       
       {/* Back button */}
-      <button
-        onClick={() => router.push('/dashboard/progress')}
-        className="fixed top-4 left-4 z-10 p-3 rounded-md bg-black/60 border border-white/20 hover:bg-black/80 transition-all duration-300 group"
-        aria-label="Back to Progress"
-      >
-        <svg className="w-5 h-5 text-amber-300 group-hover:text-amber-200 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
+      <div className="fixed top-4 left-4 z-10">
+        <BackButton />
+      </div>
 
       <div className="relative z-10 px-4 py-8 sm:py-16 lg:py-24 max-w-6xl mx-auto">
         <div className="max-w-4xl mx-auto">

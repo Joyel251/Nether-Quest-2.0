@@ -1,50 +1,37 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { toast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
-//import BackButton from "@/components/BackButton"
 
-export default function Round2() {
+export default function round2() {
   const [answer, setAnswer] = useState("")
   const [submitting, setSubmitting] = useState(false)
-  const [answerStatus, setAnswerStatus] = useState<'correct' | 'wrong' | null>(null)
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const [answerStatus, setAnswerStatus] = useState<'correct' | 'wrong' | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const router = useRouter()
 
   const correctAnswer = "blaze"
-
-  // Ensure component is mounted before using router
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!answer.trim()) return
     setSubmitting(true)
-    setIsSubmitted(true)
+    setIsSubmitted(true); // Mark as submitted
 
-    // Simple client-side check to trigger UI feedback
+    // simple client-side check to trigger UI feedback
     const isCorrect = answer.trim().toLowerCase() === correctAnswer
 
     if (isCorrect) {
-      setAnswerStatus('correct')
+      setAnswerStatus('correct');
       toast({
         title: "🔥 Correct Answer!",
         description: "Excellent! Blaze rods are indeed dropped by Blazes in the Nether!",
         className: "bg-emerald-900/90 border-emerald-500/50 text-emerald-100",
-      })
-      
-      // Only redirect if component is mounted
-      if (mounted) {
-        setTimeout(() => {
-          router.push('/dashboard/progress')
-        }, 1000)
-      }
+      });
+      router.push('/dashboard/progress'); // Redirect immediately
     } else {
-      setAnswerStatus('wrong')
+      setAnswerStatus('wrong');
       toast({
         title: "❌ Wrong Answer",
         description: "That's not quite right. Think about the fire-resistant mob that guards Nether fortresses!",
@@ -53,30 +40,16 @@ export default function Round2() {
       })
     }
 
-    // Small UX delay so the toast is visible after press
+    // small UX delay so the toast is visible after press
     setTimeout(() => {
-      setSubmitting(false)
+      setSubmitting(false);
       // Only clear answer and status if it was wrong
       if (!isCorrect) {
-        setAnswer("")
-        setAnswerStatus(null)
-        setIsSubmitted(false)
+        setAnswer("");
+        setAnswerStatus(null);
+        setIsSubmitted(false);
       }
-    }, 1500)
-  }
-
-  // Don't render until mounted to avoid hydration mismatches
-  if (!mounted) {
-    return (
-      <div className="relative min-h-screen w-full overflow-x-hidden text-white font-minecraft bg-[url('/dashboardbg.webp')] bg-cover bg-center bg-fixed">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(10,0,0,0.15),rgba(0,0,0,0.9))] animation-fade-in" />
-        <div className="relative z-10 px-4 py-8 sm:py-16 lg:py-24 max-w-6xl mx-auto">
-          <div className="flex items-center justify-center">
-            <div className="text-white">Loading...</div>
-          </div>
-        </div>
-      </div>
-    )
+    }, 1500);
   }
 
   return (
@@ -85,9 +58,16 @@ export default function Round2() {
       <div className="absolute inset-0 mix-blend-overlay opacity-25 bg-[url('/minecraft-sword-cursor.png')] bg-[length:160px_160px] animate-slow-pan" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(45deg,rgba(255,120,40,0.05)_0%,transparent_50%,rgba(255,50,20,0.05)_100%)]" />
       
-      <div className="fixed top-4 left-4 z-20">
-        {/* <BackButton variant="icon" /> */}
-      </div>
+      {/* Back button */}
+      <button
+        onClick={() => router.push('/dashboard/progress')}
+        className="fixed top-4 left-4 z-10 p-3 rounded-md bg-black/60 border border-white/20 hover:bg-black/80 transition-all duration-300 group"
+        aria-label="Back to Progress"
+      >
+        <svg className="w-5 h-5 text-amber-300 group-hover:text-amber-200 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
 
       <div className="relative z-10 px-4 py-8 sm:py-16 lg:py-24 max-w-6xl mx-auto">
         <div className="max-w-4xl mx-auto">
@@ -109,16 +89,10 @@ export default function Round2() {
 
           {/* Question Card */}
           <div className="bg-gradient-to-br from-zinc-950/90 to-black/85 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 lg:p-10 shadow-2xl mb-8 relative overflow-hidden">
-            {answerStatus === 'correct' && (
-              <div className="absolute inset-0 bg-emerald-500/10 animate-[pulse-green_1.5s_ease-out_forwards] z-0"></div>
-            )}
-            {answerStatus === 'wrong' && (
-              <div className="absolute inset-0 bg-red-500/10 animate-[shake_0.5s_ease-in-out] z-0"></div>
-            )}
             <div className="absolute inset-0 bg-red-500/10 opacity-20 z-0 animate-[fade-in_1s_ease-out]"></div>
             <div className="absolute inset-0 bg-orange-500/10 opacity-20 z-0 animate-[fade-in_1s_ease-out]"></div>
             <div className="absolute inset-0 bg-yellow-500/10 opacity-20 z-0 animate-[fade-in_1s_ease-out]"></div>
-            <div className="relative z-10 space-y-6 sm:space-y-8">
+            <div className="space-y-6 sm:space-y-8">
               <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
                   <span className="text-2xl sm:text-3xl">🔥</span>
@@ -140,9 +114,9 @@ export default function Round2() {
                     id="answer"
                     value={answer}
                     onChange={(e) => {
-                      setAnswer(e.target.value)
-                      if (answerStatus) setAnswerStatus(null)
-                      if (isSubmitted) setIsSubmitted(false)
+                      setAnswer(e.target.value);
+                      if (answerStatus) setAnswerStatus(null); // Clear status on new input
+                      if (isSubmitted) setIsSubmitted(false); // Clear submitted status on new input
                     }}
                     placeholder="Type your answer here..."
                     className={`w-full rounded-xl border bg-black/40 backdrop-blur-sm px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg text-white placeholder:text-white/50 focus:outline-none transition-all duration-300
@@ -193,7 +167,7 @@ export default function Round2() {
 
           {/* Hint Card */}
           <div className="bg-gradient-to-r from-red-900/20 to-orange-900/20 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-red-500/20 mb-6 relative overflow-hidden shadow-xl">
-            <div className="absolute inset-0 bg-orange-500/10 opacity-20 z-0 animate-[fade-in_1s_ease-out]"></div>
+             <div className="absolute inset-0 bg-orange-500/10 opacity-20 z-0 animate-[fade-in_1s_ease-out]"></div>
             <div className="relative z-10 flex items-start gap-3 sm:gap-4">
               <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
                 <span className="text-orange-400 text-lg">💡</span>
@@ -209,7 +183,7 @@ export default function Round2() {
 
           {/* Info Card */}
           <div className="relative bg-black/20 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/10 overflow-hidden shadow-xl">
-            <div className="absolute inset-0 bg-blue-500/10 opacity-20 z-0 animate-[fade-in_1s_ease-out]"></div>
+             <div className="absolute inset-0 bg-blue-500/10 opacity-20 z-0 animate-[fade-in_1s_ease-out]"></div>
             <div className="relative z-10 flex items-start gap-3 sm:gap-4">
               <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
                 <span className="text-blue-400 text-lg">ℹ</span>

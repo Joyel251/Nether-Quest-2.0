@@ -242,6 +242,13 @@ export default function round5() {
                                   description: "Completion recorded successfully.",
                                   className: "bg-emerald-900/90 border-emerald-500/50 text-emerald-100",
                                 })
+                                if ((res as any)?.eliminated) {
+                                  toast({
+                                    title: "Eliminated",
+                                    description: "Good try. You cannot proceed to the next round.",
+                                    className: "bg-amber-900/90 border-amber-500/50 text-amber-100",
+                                  })
+                                }
                               } catch (e: any) {
                                 toast({
                                   title: "Submission failed",

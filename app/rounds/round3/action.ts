@@ -38,11 +38,10 @@ export async function validateAnswer(formData: FormData) {
             }
         });
                 
-        await canAdvance();
-
-        return true;
+        const resAdv = await canAdvance();
+        return { correct: true, ...resAdv } as const;
     }
-    return false;
+    return { correct: false } as const;
 };
 
 export async function getQuestion() {

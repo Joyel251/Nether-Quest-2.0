@@ -26,7 +26,8 @@ export default function round8() {
     formData.append('answer', answer.trim());
 
     // simple client-side check to trigger UI feedback
-    const isCorrect = await validateAnswer(formData) || false;
+    const res: any = await validateAnswer(formData);
+    const isCorrect = !!res;
 
     if (isCorrect) {
       setAnswerStatus('correct');

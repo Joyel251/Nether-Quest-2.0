@@ -26,7 +26,8 @@ export default function round1() {
     formData.append('answer', answer.trim().toUpperCase());
 
     // simple client-side check to trigger UI feedback
-    const isCorrect = await validateAnswer(formData) || false;
+    const res: any = await validateAnswer(formData);
+    const isCorrect = !!res?.correct;
 
     if (isCorrect) {
       setAnswerStatus('correct');
@@ -35,7 +36,15 @@ export default function round1() {
         description: "Your answer is correct.",
         className: "bg-emerald-900/90 border-emerald-500/50 text-emerald-100",
       });
-      router.push('/redirect'); // Redirect immediately
+      if (res?.eliminated) {
+        toast({
+          title: "Eliminated",
+          description: "Good try. You cannot proceed to the next round.",
+          className: "bg-amber-900/90 border-amber-500/50 text-amber-100",
+        });
+      } else {
+        router.push('/redirect');
+      }
     } else {
       setAnswerStatus('wrong');
       toast({

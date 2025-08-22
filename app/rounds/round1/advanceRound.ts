@@ -22,7 +22,7 @@ export async function advanceRound() {
     }
 }
 
-export async function canAdvance() {
+export async function canAdvance(): Promise<{ advanced: boolean; eliminated: boolean }> {
     try {
         const supabase = await createClient();
 
@@ -36,18 +36,19 @@ export async function canAdvance() {
 
         const count = await prisma.round1Submission.count();
 
-        console.log('Count of submissions:', count);
+        const permissibleRaw = user.user_metadata?.participant_limits?.["1"];
+        const permissible = typeof permissibleRaw === 'number' ? permissibleRaw : Number(permissibleRaw) || 0;
 
-        const permissible = user.user_metadata.participant_limits["1"];
-
-        console.log('Permissible submissions:', permissible);
-
-        if(count <= permissible) {
+        if (count <= permissible) {
             await advanceRound();
+            return { advanced: true, eliminated: false };
         }
+        // cannot proceed -> eliminated
+        return { advanced: false, eliminated: true };
 
     } catch (error) {
         console.error('Error advancing round:', error);
-        throw new Error('Failed to advance round');
+        // Surface non-advancement by default
+        return { advanced: false, eliminated: false };
     }
 }

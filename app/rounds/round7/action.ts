@@ -27,14 +27,7 @@ export async function validateAnswer(formData: FormData) {
     });
 
     if ((res?.answer.toLowerCase()) === (givenAnswer.toLowerCase())) {
-        let res = await prisma.questionSet.update({
-            where: {
-                id: questionId,
-            },
-            data: {
-                Submitted: true,
-            }
-        });
+    // Marking submission is handled via separate Round7Submission table; no Submitted flag on QuestionSet
 
         let submission = await prisma.round7Submission.create({
             data: {
@@ -42,11 +35,10 @@ export async function validateAnswer(formData: FormData) {
             }
         });
                 
-        await canAdvance();
-
-        return true;
+        const resAdv = await canAdvance();
+        return { correct: true, ...resAdv } as const;
     }
-    return false;
+    return { correct: false } as const;
 };
 
 export async function getQuestion() {
@@ -80,9 +72,7 @@ export async function getQuestion() {
 
         console.log('Round 7 fetched data:', res);
 
-        if (res.Submitted === true) {
-            redirect('/redirect');
-        }
+    // No Submitted flag on QuestionSet; rely on submission table/redirect logic elsewhere
 
         return { clue1: res.clue1, clue2: res.clue2, clue3: res.clue3 };
     } catch (error: any) {

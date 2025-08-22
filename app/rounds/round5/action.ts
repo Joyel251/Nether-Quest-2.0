@@ -35,9 +35,8 @@ export async function validateAnswer() {
         }
     });
             
-    await canAdvance();
-
-    return true;
+    const resAdv = await canAdvance();
+    return { correct: true, ...resAdv } as const;
 };
 
 export async function getQuestion() {

@@ -43,16 +43,49 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return () => window.removeEventListener('keydown', onKey);
   }, [open]);
 
-  // Pull team data saved during login (we'll add storing if not already) from sessionStorage
+  // Load user metadata for sidebar (team number & name). Prefer API, fallback to sessionStorage.
   useEffect(() => {
-    try {
-      const tn = sessionStorage.getItem('teamNumber');
-      const tnm = sessionStorage.getItem('teamName');
-      if (tn) setTeamNumber(Number.parseInt(tn));
-      if (tnm) setTeamName(tnm);
-    } catch {}
+    let cancelled = false;
+    async function loadUser() {
+      try {
+        const res = await fetch('/api/user', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          const meta = data?.user_metadata || {};
+          const tn = meta.team_number ?? meta.teamNumber; // support both shapes
+          const tnm = meta.team_name ?? meta.teamName;
+          if (!cancelled) {
+            if (tn != null) setTeamNumber(Number.parseInt(String(tn)));
+            if (tnm) setTeamName(String(tnm));
+          }
+        } else {
+          // fallback to sessionStorage
+          try {
+            const tn = sessionStorage.getItem('teamNumber');
+            const tnm = sessionStorage.getItem('teamName');
+            if (!cancelled) {
+              if (tn) setTeamNumber(Number.parseInt(tn));
+              if (tnm) setTeamName(tnm);
+            }
+          } catch {}
+        }
+      } catch {
+        // fallback to sessionStorage on network errors
+        try {
+          const tn = sessionStorage.getItem('teamNumber');
+          const tnm = sessionStorage.getItem('teamName');
+          if (!cancelled) {
+            if (tn) setTeamNumber(Number.parseInt(tn));
+            if (tnm) setTeamName(tnm);
+          }
+        } catch {}
+      } finally {
+        // no-op
+      }
+    }
+    loadUser();
     const t = setTimeout(() => setAnimReady(true), 50);
-    return () => clearTimeout(t);
+    return () => { cancelled = true; clearTimeout(t); };
   }, []);
 
   // Close menu automatically after route change completes (pixel transition delay assumption ~600ms)
@@ -118,16 +151,27 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </button>
             )}
           </div>
-          {teamNumber !== null && (
-            <div className="px-4 py-4 border-b border-white/10 flex items-center gap-4 bg-black/40 backdrop-blur-sm">
-              <TeamAvatar teamNumber={teamNumber} className="w-16 h-16" />
-              <div className="flex-1 min-w-0">
-                <p className="text-[10px] uppercase tracking-wider text-white/50 mb-1">Team</p>
-                <p className="font-semibold text-amber-300 leading-tight truncate" title={teamName || undefined}>{teamName || 'Unknown'}</p>
-                <p className="text-[11px] text-white/60 mt-0.5"># {teamNumber}</p>
+          <div className="px-4 py-4 border-b border-white/10 flex items-center gap-4 bg-black/40 backdrop-blur-sm min-h-[5.5rem]">
+            {teamNumber !== null ? (
+              <>
+                <TeamAvatar teamNumber={teamNumber} className="w-16 h-16" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] uppercase tracking-wider text-white/50 mb-1">Team</p>
+                  <p className="font-semibold text-amber-300 leading-tight truncate" title={teamName || undefined}>{teamName || 'Unknown'}</p>
+                  <p className="text-[11px] text-white/60 mt-0.5"># {teamNumber}</p>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center gap-4 w-full">
+                <div className="w-16 h-16 rounded-full bg-white/10 animate-pulse" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 w-16 bg-white/10 rounded animate-pulse" />
+                  <div className="h-4 w-32 bg-white/10 rounded animate-pulse" />
+                  <div className="h-3 w-20 bg-white/10 rounded animate-pulse" />
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
           <nav className="flex-1 overflow-y-auto p-4 space-y-4 pb-24">
             {navItems.map(item => (
               <button

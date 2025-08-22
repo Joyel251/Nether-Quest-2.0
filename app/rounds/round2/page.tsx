@@ -35,7 +35,7 @@ export default function round2() {
         description: "Excellent! You know the Nether's secrets well!",
         className: "bg-emerald-900/90 border-emerald-500/50 text-emerald-100",
       });
-      router.push('/dashboard/progress'); // Redirect immediately
+      router.push('/redirect'); // Redirect immediately
     } else {
       setAnswerStatus('wrong');
       toast({

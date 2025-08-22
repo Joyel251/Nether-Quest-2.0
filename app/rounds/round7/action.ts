@@ -26,7 +26,7 @@ export async function validateAnswer(formData: FormData) {
             }
     });
 
-    if (res?.answer === givenAnswer) {
+    if ((res?.answer.toLowerCase()) === (givenAnswer.toLowerCase())) {
         let res = await prisma.questionSet.update({
             where: {
                 id: questionId,

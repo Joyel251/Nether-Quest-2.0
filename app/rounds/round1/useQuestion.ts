@@ -1,15 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { getQuestion } from "./action";
 
 interface QuestionState {
   question: string | null;
   loading: boolean;
   error: string | null;
-  shouldRedirect: boolean;
-  redirectPath: string | null;
 }
 
 export default function useQuestion() {
@@ -17,11 +14,7 @@ export default function useQuestion() {
     question: null,
     loading: true,
     error: null,
-    shouldRedirect: false,
-    redirectPath: null,
   });
-
-  const router = useRouter();
 
   useEffect(() => {
     let isMounted = true;
@@ -34,17 +27,6 @@ export default function useQuestion() {
 
         if (response.error) {
           throw new Error(response.error || 'Failed to fetch question');
-        }
-
-        if (response.redirect === '/redirect') {
-            setState(prev => ({
-              ...prev,
-              question: null,
-              shouldRedirect: true,
-              redirectPath: '/redirect',
-              loading: false,
-          }));
-          return;
         }
 
         if (response.error) {
@@ -75,17 +57,13 @@ export default function useQuestion() {
     };
   }, []);
 
-  // Handle redirect in a separate effect
   useEffect(() => {
-    if (state.shouldRedirect && state.redirectPath) {
-      router.push(state.redirectPath);
-    }
-  }, [state.shouldRedirect, state.redirectPath, router]);
+
+  }, []);
 
   return {
     question: state.question,
     loading: state.loading,
     error: state.error,
-    isRedirecting: state.shouldRedirect,
   };
 }

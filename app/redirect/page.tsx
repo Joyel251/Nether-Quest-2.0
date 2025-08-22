@@ -13,7 +13,7 @@ export default function RoundCompletedPage() {
 
       <div className="relative z-10 max-w-xl mx-auto p-8 bg-gradient-to-br from-zinc-950/90 to-black/85 border border-white/10 backdrop-blur-xl rounded-3xl shadow-2xl text-center">
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-green-400 to-teal-500 drop-shadow mb-4">
-          Completed!
+          You have already completed this round!
         </h1>
         <a
           href="/dashboard/progress"

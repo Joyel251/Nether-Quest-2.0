@@ -12,7 +12,7 @@ export default function round7() {
       <div className="absolute inset-0 mix-blend-overlay opacity-25 bg-[url('/minecraft-sword-cursor.png')] bg-[length:160px_160px] animate-slow-pan" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(45deg,rgba(255,120,40,0.05)_0%,transparent_50%,rgba(255,50,20,0.05)_100%)]" />
       
-      <div className="fixed top-4 left-4 z-20">
+      <div className="fixed top-4 left-4 z-50">
         <BackButton variant="label" />
       </div>
 

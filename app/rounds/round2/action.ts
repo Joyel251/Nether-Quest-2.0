@@ -1,9 +1,9 @@
 'use server'
 import { createClient } from '@/utils/supabase'
 import prisma from '@/utils/prisma';
-import { canAdvance } from './advanceRound';
 import { redirect } from 'next/navigation';
 import { isRedirectError } from 'next/dist/client/components/redirect';
+import { canAdvance } from './advanceRound';
 
 export async function validateAnswer(formData: FormData) {
 
@@ -16,14 +16,14 @@ export async function validateAnswer(formData: FormData) {
 
     const teamNumber = Number(user?.user_metadata.team_number);
 
-    let res = await prisma.round1.findFirst({
+    let res = await prisma.round2.findFirst({
             where: {
                 teamNumber: teamNumber,
             }
     });
 
     if (res?.answer === givenAnswer) {
-        let res = await prisma.round1.update({
+        let res = await prisma.round2.update({
             where: {
                 teamNumber: teamNumber,
             },
@@ -32,12 +32,12 @@ export async function validateAnswer(formData: FormData) {
             }
         });
 
-        let submission = await prisma.round1Submission.create({
+        let submission = await prisma.round2Submission.create({
             data: {
                 teamNumber: teamNumber,
             }
         });
-
+                
         canAdvance();
 
         return true;
@@ -66,7 +66,7 @@ export async function getQuestion() {
 
         const teamNumber = Number(user.user_metadata.team_number);
 
-        const res = await prisma.round1.findFirst({
+        const res = await prisma.round2.findFirst({
             where: { teamNumber: teamNumber }
         });
 

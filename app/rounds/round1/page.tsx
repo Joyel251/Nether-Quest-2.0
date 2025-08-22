@@ -175,9 +175,9 @@ export default function round1() {
                 <span className="text-blue-400 text-lg">ℹ</span>
               </div>
               <div>
-                <h3 className="text-sm sm:text-base font-semibold text-white/90 mb-2">Clue</h3>
+                <h3 className="text-sm sm:text-base font-semibold text-white/90 mb-2">Game Info</h3>
                 <p className="text-xs sm:text-sm text-white/70 leading-relaxed">
-                  {clue}
+                  This is a client-side demo. In the real game, answers would be validated server-side and progress would be tracked.
                 </p>
               </div>
             </div>

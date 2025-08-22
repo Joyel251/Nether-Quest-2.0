@@ -32,16 +32,16 @@ export default function round7() {
     if (isCorrect) {
       setAnswerStatus('correct');
       toast({
-        title: "🔥 Correct Answer!",
-        description: "Excellent! You know the Nether's secrets well!",
+        title: "Excellent",
+        description: "Your answer is correct.",
         className: "bg-emerald-900/90 border-emerald-500/50 text-emerald-100",
       });
       router.push('/redirect'); // Redirect immediately
     } else {
       setAnswerStatus('wrong');
       toast({
-        title: "❌ Wrong Answer",
-        description: "That's not quite right. Think about the fiery depths of the Nether!",
+        title: "Incorrect",
+        description: "That answer is not correct. Please try again.",
         variant: "destructive",
         className: "bg-red-900/90 border-red-500/50 text-red-100",
       })

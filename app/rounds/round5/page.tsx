@@ -44,8 +44,8 @@ export default function round5() {
       if (!complete) {
         setComplete(true)
         toast({
-          title: "🎉 Puzzle Solved!",
-          description: "Great job! You completed the 3×3 jigsaw.",
+          title: "Excellent",
+          description: "Puzzle completed successfully.",
           className: "bg-emerald-900/90 border-emerald-500/50 text-emerald-100",
         })
         // create confetti pieces
@@ -238,8 +238,8 @@ export default function round5() {
                                 if ((res as any)?.error) throw new Error((res as any).error)
                                 setSubmitted(true)
                                 toast({
-                                  title: "✅ Submitted!",
-                                  description: "Your Round 5 completion has been recorded for the leaderboard.",
+                                  title: "Excellent",
+                                  description: "Completion recorded successfully.",
                                   className: "bg-emerald-900/90 border-emerald-500/50 text-emerald-100",
                                 })
                               } catch (e: any) {

@@ -31,16 +31,16 @@ export default function round2() {
     if (isCorrect) {
       setAnswerStatus('correct');
       toast({
-        title: "🔥 Correct Answer!",
-        description: "Excellent! You know the Nether's secrets well!",
+        title: "Excellent",
+        description: "Your answer is correct.",
         className: "bg-emerald-900/90 border-emerald-500/50 text-emerald-100",
       });
       router.push('/redirect');
     } else {
       setAnswerStatus('wrong');
       toast({
-        title: "❌ Wrong Answer",
-        description: "That's not quite right. Think about the fiery depths of the Nether!",
+        title: "Incorrect",
+        description: "That answer is not correct. Please try again.",
         variant: "destructive",
         className: "bg-red-900/90 border-red-500/50 text-red-100",
       })
@@ -78,7 +78,7 @@ export default function round2() {
               </h1>
             </div>
             <p className="text-base sm:text-lg text-white/80 max-w-2xl mx-auto leading-relaxed">
-              Dive deeper into the Nether's mysteries!
+              Please answer the following question.
             </p>
             <div className="mt-4 sm:mt-6 w-24 h-1 bg-gradient-to-r from-red-500 to-orange-600 rounded-full mx-auto"></div>
           </header>

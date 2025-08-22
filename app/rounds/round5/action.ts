@@ -35,7 +35,7 @@ export async function validateAnswer() {
         }
     });
             
-    canAdvance();
+    await canAdvance();
 
     return true;
 };

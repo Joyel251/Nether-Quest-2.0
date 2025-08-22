@@ -38,7 +38,7 @@ export async function validateAnswer(formData: FormData) {
             }
         });
                 
-        canAdvance();
+        await canAdvance();
 
         return true;
     }

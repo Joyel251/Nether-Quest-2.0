@@ -128,7 +128,7 @@ export default function round5() {
               <>
                 <p className="font-semibold text-white/90">Question</p>
                 <p className="mt-1">{question}</p>
-                <p className="mt-3 text-white/70 text-xs">Reassemble the 3×3 image to reveal the clue on the back.</p>
+                <p className="mt-3 text-white/70 text-xs">Reassemble the 3×3 image to reveal the clue on the back.You can swap images either by dragging or by tapping and swap!!</p>
               </>
             )}
           </div>

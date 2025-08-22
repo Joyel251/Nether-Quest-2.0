@@ -175,11 +175,23 @@ export default function round8() {
                 <span className="text-blue-400 text-lg">ℹ</span>
               </div>
               <div>
-                <h3 className="text-sm sm:text-base font-semibold text-white/90 mb-2">Clue</h3>
-                <p className="text-xs sm:text-sm text-white/70 leading-relaxed">
-                  {clue1} <br />
-                  {clue2}
-                </p>
+                <h3 className="text-sm sm:text-base font-semibold text-white/90 mb-2">Clues</h3>
+                <div className="space-y-2">
+                  {loading && (
+                    <p className="text-xs sm:text-sm text-white/70">Loading clues...</p>
+                  )}
+                  {!loading && (!clue1 && !clue2) && (
+                    <p className="text-xs sm:text-sm text-white/60">No clues available.</p>
+                  )}
+                  {[clue1, clue2].filter(Boolean).map((c, i) => (
+                    <div key={i} className="flex items-start gap-3 rounded-lg border border-white/10 bg-white/5 px-3 py-2">
+                      <div className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-red-600/80 text-[10px] font-bold ring-1 ring-white/10">
+                        {i + 1}
+                      </div>
+                      <p className="text-xs sm:text-sm text-white/80 whitespace-pre-wrap break-words">{c as string}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

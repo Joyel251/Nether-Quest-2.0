@@ -14,7 +14,7 @@ export default function round1() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const router = useRouter()
 
-  const { question, error, loading, isRedirecting, clue } = useQuestion();
+  const { question, error, loading, isRedirecting } = useQuestion();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -61,7 +61,7 @@ export default function round1() {
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(45deg,rgba(255,120,40,0.05)_0%,transparent_50%,rgba(255,50,20,0.05)_100%)]" />
       
       {/* Back button */}
-      <div className="fixed top-4 left-4 z-50">
+      <div className="fixed top-4 left-4 z-10">
         <BackButton />
       </div>
 
@@ -175,9 +175,9 @@ export default function round1() {
                 <span className="text-blue-400 text-lg">ℹ</span>
               </div>
               <div>
-                <h3 className="text-sm sm:text-base font-semibold text-white/90 mb-2">Clue</h3>
+                <h3 className="text-sm sm:text-base font-semibold text-white/90 mb-2">Game Info</h3>
                 <p className="text-xs sm:text-sm text-white/70 leading-relaxed">
-                  {clue}
+                  This is a client-side demo. In the real game, answers would be validated server-side and progress would be tracked.
                 </p>
               </div>
             </div>

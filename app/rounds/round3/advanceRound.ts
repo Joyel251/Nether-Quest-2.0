@@ -42,7 +42,7 @@ export async function canAdvance() {
 
         console.log('Permissible submissions:', permissible);
 
-        if(count < permissible) {
+        if(count <= permissible) {
             await advanceRound();
         }
 

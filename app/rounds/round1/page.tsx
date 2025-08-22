@@ -14,7 +14,7 @@ export default function round1() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const router = useRouter()
 
-  const { question, error, loading, isRedirecting, clue } = useQuestion();
+  const { question, error, loading, clue } = useQuestion();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -102,7 +102,7 @@ export default function round1() {
                     {loading ? (<span>Loading...</span>) : (
                       <span>{question}</span>
                     )}
-                    {error && !isRedirecting && <span className="text-red-500">{"error"}</span>}
+                    {error && <span className="text-red-500">{"error"}</span>}
                   </p>
                 </div>
               </div>
@@ -132,9 +132,9 @@ export default function round1() {
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                   <button
                     type="submit"
-                    disabled={submitting || !answer.trim() || isSubmitted}
+                    disabled={submitting || !answer.trim() || isSubmitted || loading}
                     className="flex-1 inline-flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-white hover:from-amber-600 hover:to-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl border border-white/10"
-                  >
+                  >         
                     {submitting ? (
                       <>
                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

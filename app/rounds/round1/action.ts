@@ -2,6 +2,7 @@
 import { createClient } from '@/utils/supabase'
 import prisma from '@/utils/prisma';
 import { redirect } from 'next/navigation';
+import { isRedirectError } from 'next/dist/client/components/redirect';
 
 export async function validateAnswer(formData: FormData) {
 
@@ -71,11 +72,16 @@ export async function getQuestion() {
         }
 
         if (res.Submitted === true) {
-            return { redirect: '/redirect' };
+            redirect('/redirect');
         }
 
         return { question: res.question, clue: res.clue };
-    } catch (error) {
+    } catch (error: any) {
+
+        if(isRedirectError(error)) {
+            throw error;
+        }
+
         console.error('Server error in getQuestion:', error);
         return { error: 'Internal server error' };
     }

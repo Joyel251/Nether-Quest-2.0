@@ -1,21 +1,51 @@
 "use client"
 import { useState } from "react"
+import { toast } from "@/hooks/use-toast"
+import { useRouter } from "next/navigation"
 import BackButton from "@/components/BackButton"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import useQuestion from "./useQuestion"
+import { validateAnswer } from "./action"
 
 export default function round7() {
   const [answer, setAnswer] = useState("")
   const [submitted, setSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [answerStatus, setAnswerStatus] = useState<'correct' | 'wrong' | null>(null);
+  const router = useRouter();
+
+  const { clue1, clue2, clue3, loading, error } = useQuestion();
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!answer.trim()) return
     setIsSubmitting(true)
-    // Hook up server action here later
-    await new Promise(r => setTimeout(r, 600))
     setSubmitted(true)
+
+    const formData = new FormData();
+    formData.append('answer', answer.trim());
+
+    // simple client-side check to trigger UI feedback
+    const isCorrect = await validateAnswer(formData) || false;
+
+    if (isCorrect) {
+      setAnswerStatus('correct');
+      toast({
+        title: "🔥 Correct Answer!",
+        description: "Excellent! You know the Nether's secrets well!",
+        className: "bg-emerald-900/90 border-emerald-500/50 text-emerald-100",
+      });
+      router.push('/redirect'); // Redirect immediately
+    } else {
+      setAnswerStatus('wrong');
+      toast({
+        title: "❌ Wrong Answer",
+        description: "That's not quite right. Think about the fiery depths of the Nether!",
+        variant: "destructive",
+        className: "bg-red-900/90 border-red-500/50 text-red-100",
+      })
+    }
     setIsSubmitting(false)
   }
 
@@ -50,13 +80,14 @@ export default function round7() {
 
             {/* Clues */}
             <div className="space-y-3 sm:space-y-4">
+              {loading && <p className="text-white/70 text-sm">Loading clues...</p>}
               {[1,2,3].map((n) => (
                 <div key={n} className="flex items-start gap-3 rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.03] p-4">
                   <div className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-violet-600/80 text-xs font-bold ring-1 ring-white/10">
                     {n}
                   </div>
                   <div className="min-w-0 text-sm sm:text-base leading-relaxed text-white/90">
-                    <p className="whitespace-pre-wrap break-words">Clue {n} goes here.</p>
+                    <p className="whitespace-pre-wrap break-words">{`Clue ${n}: ${n === 1 ? clue1 : n === 2 ? clue2 : clue3}`}</p>
                   </div>
                 </div>
               ))}

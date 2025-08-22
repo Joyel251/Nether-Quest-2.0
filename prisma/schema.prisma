@@ -123,6 +123,7 @@ model QuestionSet {
   clue2           String
   clue3           String
   answer          String
+  Submitted       Boolean   @default(false)
 
   @@map("questionset")
 }

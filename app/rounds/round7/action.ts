@@ -3,7 +3,7 @@ import { createClient } from '@/utils/supabase'
 import prisma from '@/utils/prisma';
 import { redirect } from 'next/navigation';
 import { isRedirectError } from 'next/dist/client/components/redirect';
-import { advanceRound } from './advanceRound';
+import { canAdvance } from './advanceRound';
 
 export async function validateAnswer(formData: FormData) {
 
@@ -18,29 +18,31 @@ export async function validateAnswer(formData: FormData) {
 
     const teamNumber = Number(user?.user_metadata.team_number);
 
-    let res = await prisma.round8.findFirst({
+    const questionId = Number(user?.user_metadata.qid);
+
+    let res = await prisma.questionSet.findFirst({
             where: {
-                teamNumber: teamNumber,
+                id: questionId,
             }
     });
 
     if (res?.answer === givenAnswer) {
-        let res = await prisma.round8.update({
+        let res = await prisma.questionSet.update({
             where: {
-                teamNumber: teamNumber,
+                id: questionId,
             },
             data: {
                 Submitted: true,
             }
         });
 
-        let submission = await prisma.round8Submission.create({
+        let submission = await prisma.round7Submission.create({
             data: {
                 teamNumber: teamNumber,
             }
         });
-
-        await advanceRound();
+                
+        await canAdvance();
 
         return true;
     }
@@ -66,21 +68,23 @@ export async function getQuestion() {
             return { error: 'Team number not found in user metadata' };
         }
 
-        const teamNumber = Number(user.user_metadata.team_number);
+        const questionId = Number(user.user_metadata.qid);
 
-        const res = await prisma.round8.findFirst({
-            where: { teamNumber: teamNumber }
+        const res = await prisma.questionSet.findFirst({
+            where: { id: questionId }
         });
 
         if (!res) {
             return { error: 'Team not found' };
         }
 
+        console.log('Round 7 fetched data:', res);
+
         if (res.Submitted === true) {
             redirect('/redirect');
         }
 
-        return { question: res.question, clue1: res.clue1, clue2: res.clue2 };
+        return { clue1: res.clue1, clue2: res.clue2, clue3: res.clue3 };
     } catch (error: any) {
 
         if(isRedirectError(error)) {

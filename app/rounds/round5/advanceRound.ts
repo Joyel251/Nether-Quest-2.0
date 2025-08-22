@@ -34,7 +34,7 @@ export async function canAdvance() {
             throw new Error('User not authenticated');
         }
 
-        const count = await prisma.round3Submission.count();
+        const count = await prisma.round5Submission.count();
 
         console.log('Count of submissions:', count);
 

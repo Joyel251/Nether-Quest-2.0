@@ -18,7 +18,7 @@ export default function RoundCompletedPage() {
           You have completed this round!
         </h1>
         <a
-          onClick={router.refresh}
+          onClick={() => setTimeout(() => router.refresh(), 1000)}
           href="/dashboard/progress"
           className="inline-flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 px-8 py-4 text-lg font-semibold text-white hover:from-emerald-600 hover:to-green-700 transition-all duration-200 shadow-lg hover:shadow-xl border border-white/10 animate-fade-in-up"
         >

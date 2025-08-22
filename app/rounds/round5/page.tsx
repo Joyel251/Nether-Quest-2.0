@@ -4,10 +4,13 @@
 import BackButton from "@/components/BackButton"
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { toast } from "@/hooks/use-toast"
+import useQuestion from "./useQuestion"
+import { markCompleted } from "./action"
 
 const SIZE = 3 // 3x3
 
 export default function round5() {
+  const { question, clue, loading, error } = useQuestion();
   const [order, setOrder] = useState<number[]>([]) // piece id at each slot index
   const [selected, setSelected] = useState<number | null>(null) // selected piece id (tap swap)
   const [complete, setComplete] = useState(false)
@@ -38,7 +41,7 @@ export default function round5() {
     setOrder(shuffled)
   }, [ids])
 
-  // check completion (toast only, no redirect)
+  // check completion (persist completion, show toast)
   useEffect(() => {
     if (order.length === ids.length && order.every((id, i) => id === i)) {
       if (!complete) {
@@ -51,6 +54,8 @@ export default function round5() {
           description: "Great job! You completed the 3×3 jigsaw.",
           className: "bg-emerald-900/90 border-emerald-500/50 text-emerald-100",
         })
+        // mark in DB as submitted
+        markCompleted().catch(() => {})
         // create confetti pieces
         const colors = ['#f472b6','#fb923c','#facc15','#34d399','#60a5fa','#c084fc']
         const pieces = Array.from({length: 40}, (_, i) => ({
@@ -114,7 +119,7 @@ export default function round5() {
       <div className="fixed top-4 left-4 z-50"><BackButton variant="label" /></div>
 
   <div className="relative z-10 px-4 py-12 sm:py-16 flex flex-col items-center min-h-screen">
-        {/* Header */}
+  {/* Header */}
         <header className="text-center mb-8 sm:mb-12 max-w-3xl">
           <div className="inline-flex items-center gap-4 mb-6 px-4 py-2 rounded-2xl bg-black/40 backdrop-blur-md ring-1 ring-white/10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.6)]">
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl flex items-center justify-center shadow-lg ring-2 ring-white/10">
@@ -124,9 +129,17 @@ export default function round5() {
               Jigsaw Challenge
             </h1>
           </div>
-          <p className="mx-auto text-neutral-100/90 text-sm sm:text-lg leading-relaxed px-4 py-3 rounded-xl bg-gradient-to-br from-black/55 via-black/40 to-black/55 backdrop-blur-md ring-1 ring-white/10 shadow-[0_4px_16px_-4px_rgba(0,0,0,0.7)]">
-            Reassemble the 3×3 Minecraft image. Drag pieces (desktop) or tap two pieces to swap (mobile). Complete it to finish the round.
-          </p>
+          <div className="mx-auto text-neutral-100/90 text-sm sm:text-lg leading-relaxed px-4 py-3 rounded-xl bg-gradient-to-br from-black/55 via-black/40 to-black/55 backdrop-blur-md ring-1 ring-white/10 shadow-[0_4px_16px_-4px_rgba(0,0,0,0.7)]">
+            {loading && <span className="text-white/70">Loading question…</span>}
+            {error && <span className="text-red-400">{error}</span>}
+            {!loading && !error && (
+              <>
+                <p className="font-semibold text-white/90">Question</p>
+                <p className="mt-1">{question}</p>
+                <p className="mt-3 text-white/70 text-xs">Reassemble the 3×3 image to reveal the clue on the back.</p>
+              </>
+            )}
+          </div>
         </header>
 
         {/* Selected helper (mobile-friendly) */}
@@ -212,7 +225,7 @@ export default function round5() {
                     <div className="absolute -top-3 -left-3 w-20 h-20 bg-pink-500/20 blur-3xl rounded-full" />
                   )}
                 </div>
-                {/* BACK: Clue */}
+                {/* BACK: Clue from DB */}
                 <div className="flip-face back">
                   {imageAvailable && <div className="absolute inset-0 bg-[url('/mine.jpg')] bg-cover bg-center opacity-25" />}
                   <div className="absolute inset-0 bg-gradient-to-br from-black/75 via-black/60 to-black/75 backdrop-blur-md" />
@@ -221,8 +234,8 @@ export default function round5() {
                       <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 via-teal-300 to-emerald-400 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] tracking-tight">
                         Clue Unlocked
                       </h2>
-                      <p className="text-neutral-100/90 text-sm sm:text-lg leading-relaxed">
-                        Deep within the Nether, fiery guardians protect what you need next. Remember the blaze that lights the path forward.
+                      <p className="text-neutral-100/90 text-sm sm:text-lg leading-relaxed min-h-[2.5rem]">
+                        {loading ? 'Loading…' : (clue ?? 'No clue available')}
                       </p>
                       <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-[11px] sm:text-xs text-white/80">
                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-black/50 backdrop-blur-sm border border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.6)]">🔥 Blaze Hint</span>

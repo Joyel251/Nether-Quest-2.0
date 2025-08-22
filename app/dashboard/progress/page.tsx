@@ -13,17 +13,7 @@ interface UserData {
   id: string;
   user_metadata: {
     round?: number;
-    status?: string;
     event_access?: boolean;
-    eliminated_at?: string;
-    round_1_completed?: boolean;
-    round_2_completed?: boolean;
-    round_3_completed?: boolean;
-    round_4_completed?: boolean;
-    round_5_completed?: boolean;
-    round_6_completed?: boolean;
-    round_7_completed?: boolean;
-    round_8_completed?: boolean;
   };
 }
 
@@ -46,7 +36,7 @@ export default function ProgressPage() {
   }, [pathname]);
 
   const fetchUserData = async () => {
-    setLoading(true);
+    
     try {
       const response = await fetch('/api/user');
       if (response.ok) {
@@ -69,33 +59,22 @@ export default function ProgressPage() {
     const updatedRounds: RoundInfo[] = [];
     const currentRound = userData.user_metadata?.round || 1;
     const eventAccess = userData.user_metadata?.event_access || false;
-    const userStatus = userData.user_metadata?.status || 'active';
 
     for (let i = 1; i <= 8; i++) {
       let status: RoundInfo['status'] = 'locked';
       
-      // Check if user is eliminated
-      if (userStatus === 'eliminated') {
-        status = i <= currentRound ? 'unlocked' : 'locked';
-      }
       // If event hasn't started, all rounds are locked
-      else if (!eventAccess) {
+      if (!eventAccess) {
+        status = 'locked';
+      } else if (i < currentRound) {
+        status = 'completed';
+      } else if (i === currentRound) {
+        status = 'unlocked';
+      } else {
         status = 'locked';
       }
-      // If event started, determine status based on completion
-      else {
-        const roundCompleted = userData.user_metadata?.[`round_${i}_completed` as keyof typeof userData.user_metadata] as boolean;
-        
-        if (roundCompleted) {
-          status = 'completed';
-        } else if (i === currentRound) {
-          status = 'unlocked';
-        } else if (i < currentRound) {
-          status = 'completed';
-        } else {
-          status = 'locked';
-        }
-      }
+
+      console.log(currentRound);
 
       updatedRounds.push({ round: i, status });
     }
@@ -105,7 +84,6 @@ export default function ProgressPage() {
 
   const handleRoundClick = (roundNumber: number, status: RoundInfo['status']) => {
     if (status === 'locked') return;
-    if (user?.user_metadata?.status === 'eliminated') return;
     router.push(`/rounds/round${roundNumber}`);
   };
 
@@ -149,15 +127,6 @@ export default function ProgressPage() {
         </Alert>
       )}
 
-      {user?.user_metadata?.status === 'eliminated' && (
-        <Alert className="mt-6 mb-8 border-red-500/50 bg-red-500/10">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertDescription className="text-red-200">
-            <strong>Eliminated:</strong> You were eliminated from the competition. You can still view your completed rounds but cannot proceed further.
-          </AlertDescription>
-        </Alert>
-      )}
-
       <div className="mt-10 grid md:grid-cols-4 sm:grid-cols-2 gap-5">
         {rounds.map(r => (
           <div key={r.round} className={`relative rounded-lg p-[1px] bg-gradient-to-br ${roundColors[r.status]} shadow-lg shadow-black/40 border border-white/10`}>
@@ -177,19 +146,17 @@ export default function ProgressPage() {
               </p>
               <div className="mt-3">
                 <button
-                  disabled={r.status === 'locked' || user?.user_metadata?.status === 'eliminated' || r.status === "completed"}
+                  disabled={r.status === 'locked' || r.status === "completed"}
                   onClick={() => handleRoundClick(r.round, r.status)}
                   className={`w-full py-1.5 rounded-md text-xs font-semibold border transition-colors ${
-                    r.status === 'locked' || user?.user_metadata?.status === 'eliminated'
+                    r.status === 'locked'
                       ? 'border-stone-700 text-stone-500 cursor-not-allowed' 
                       : r.status === 'unlocked' 
                         ? 'border-amber-400 text-amber-200 hover:bg-amber-600/30' 
                         : 'border-emerald-400 text-emerald-200 hover:bg-emerald-600/30'
                   }`}
                 >
-                  {user?.user_metadata?.status === 'eliminated' 
-                    ? 'Eliminated'
-                    : r.status === 'completed' 
+                  {r.status === 'completed' 
                       ? '🙏'
                       : r.status === 'unlocked' 
                         ? 'Enter Round' 

@@ -3,31 +3,36 @@
 import React, { useState } from "react"
 import { toast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
+import useQuestion from "./useQuestion"
+import { validateAnswer } from "./action"
 import BackButton from "@/components/BackButton"
 
 export default function round2() {
   const [answer, setAnswer] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [answerStatus, setAnswerStatus] = useState<'correct' | 'wrong' | null>(null);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitted, setIsSubmitted]    = useState(false);
   const router = useRouter()
 
-  const correctAnswer = "blaze"
+  const { question, error, loading, clue } = useQuestion();
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!answer.trim()) return
     setSubmitting(true)
     setIsSubmitted(true); // Mark as submitted
 
+    const formData = new FormData();
+    formData.append('answer', answer.trim().toUpperCase());
+
     // simple client-side check to trigger UI feedback
-    const isCorrect = answer.trim().toLowerCase() === correctAnswer
+    const isCorrect = await validateAnswer(formData) || false;
 
     if (isCorrect) {
       setAnswerStatus('correct');
       toast({
         title: "🔥 Correct Answer!",
-        description: "Excellent! Blaze rods are indeed dropped by Blazes in the Nether!",
+        description: "Excellent! You know the Nether's secrets well!",
         className: "bg-emerald-900/90 border-emerald-500/50 text-emerald-100",
       });
       router.push('/dashboard/progress'); // Redirect immediately
@@ -35,22 +40,18 @@ export default function round2() {
       setAnswerStatus('wrong');
       toast({
         title: "❌ Wrong Answer",
-        description: "That's not quite right. Think about the fire-resistant mob that guards Nether fortresses!",
+        description: "That's not quite right. Think about the fiery depths of the Nether!",
         variant: "destructive",
         className: "bg-red-900/90 border-red-500/50 text-red-100",
       })
+      setSubmitting(false);
     }
 
-    // small UX delay so the toast is visible after press
-    setTimeout(() => {
-      setSubmitting(false);
-      // Only clear answer and status if it was wrong
-      if (!isCorrect) {
-        setAnswer("");
-        setAnswerStatus(null);
-        setIsSubmitted(false);
-      }
-    }, 1500);
+    if (!isCorrect) {
+      setAnswer("");
+      setAnswerStatus(null);
+      setIsSubmitted(false);
+    }
   }
 
   return (
@@ -72,30 +73,36 @@ export default function round2() {
               <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
                 <span className="text-xl sm:text-3xl font-bold text-white">2</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-orange-400 to-yellow-500 drop-shadow">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-red-300 via-orange-400 to-yellow-500 drop-shadow">
                 Round 2
               </h1>
             </div>
             <p className="text-base sm:text-lg text-white/80 max-w-2xl mx-auto leading-relaxed">
-              The Nether awaits! Test your knowledge of the underworld.
+              Dive deeper into the Nether's mysteries!
             </p>
             <div className="mt-4 sm:mt-6 w-24 h-1 bg-gradient-to-r from-red-500 to-orange-600 rounded-full mx-auto"></div>
           </header>
 
           {/* Question Card */}
-          <div className="bg-gradient-to-br from-zinc-950/90 to-black/85 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 lg:p-10 shadow-2xl mb-8 relative overflow-hidden">
-            <div className="absolute inset-0 bg-red-500/10 opacity-20 z-0 animate-[fade-in_1s_ease-out]"></div>
-            <div className="absolute inset-0 bg-orange-500/10 opacity-20 z-0 animate-[fade-in_1s_ease-out]"></div>
-            <div className="absolute inset-0 bg-yellow-500/10 opacity-20 z-0 animate-[fade-in_1s_ease-out]"></div>
-            <div className="space-y-6 sm:space-y-8">
+          <div className="relative bg-gradient-to-br from-zinc-950/90 to-black/85 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 lg:p-10 shadow-2xl mb-8 overflow-hidden">
+             {answerStatus === 'correct' && (
+                <div className="absolute inset-0 bg-emerald-500/10 animate-[pulse-green_1.5s_ease-out_forwards] z-0"></div>
+              )}
+              {answerStatus === 'wrong' && (
+                <div className="absolute inset-0 bg-red-500/10 animate-[shake_0.5s_ease-in-out] z-0"></div>
+              )}
+            <div className="relative z-10 space-y-6 sm:space-y-8">
               <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
                   <span className="text-2xl sm:text-3xl">🔥</span>
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Nether Question</h2>
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Question</h2>
                   <p className="text-base sm:text-lg lg:text-xl text-white/90 leading-relaxed">
-                    Which hostile mob in the Nether drops blaze rods when defeated?
+                    {loading ? (<span>Loading...</span>) : (
+                      <span>{question}</span>
+                    )}
+                    {error && <span className="text-red-500">{"error"}</span>}
                   </p>
                 </div>
               </div>
@@ -125,9 +132,9 @@ export default function round2() {
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                   <button
                     type="submit"
-                    disabled={submitting || !answer.trim() || isSubmitted}
+                    disabled={submitting || !answer.trim() || isSubmitted || loading}
                     className="flex-1 inline-flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-red-500 to-orange-600 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-white hover:from-red-600 hover:to-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl border border-white/10"
-                  >
+                  >         
                     {submitting ? (
                       <>
                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -135,7 +142,7 @@ export default function round2() {
                       </>
                     ) : (
                       <>
-                        <span className="text-lg">🔥</span>
+                        <span className="text-lg">✓</span>
                         Submit Answer
                       </>
                     )}
@@ -160,22 +167,6 @@ export default function round2() {
             </div>
           </div>
 
-          {/* Hint Card */}
-          <div className="bg-gradient-to-r from-red-900/20 to-orange-900/20 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-red-500/20 mb-6 relative overflow-hidden shadow-xl">
-             <div className="absolute inset-0 bg-orange-500/10 opacity-20 z-0 animate-[fade-in_1s_ease-out]"></div>
-            <div className="relative z-10 flex items-start gap-3 sm:gap-4">
-              <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                <span className="text-orange-400 text-lg">💡</span>
-              </div>
-              <div>
-                <h3 className="text-sm sm:text-base font-semibold text-orange-200 mb-2">Hint</h3>
-                <p className="text-xs sm:text-sm text-orange-100/80 leading-relaxed">
-                  This fiery creature is commonly found in Nether fortresses and is essential for brewing stands!
-                </p>
-              </div>
-            </div>
-          </div>
-
           {/* Info Card */}
           <div className="relative bg-black/20 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/10 overflow-hidden shadow-xl">
              <div className="absolute inset-0 bg-blue-500/10 opacity-20 z-0 animate-[fade-in_1s_ease-out]"></div>
@@ -184,9 +175,9 @@ export default function round2() {
                 <span className="text-blue-400 text-lg">ℹ</span>
               </div>
               <div>
-                <h3 className="text-sm sm:text-base font-semibold text-white/90 mb-2">Game Info</h3>
+                <h3 className="text-sm sm:text-base font-semibold text-white/90 mb-2">Clue</h3>
                 <p className="text-xs sm:text-sm text-white/70 leading-relaxed">
-                  This is a client-side demo. In the real game, answers would be validated server-side and progress would be tracked.
+                  {clue}
                 </p>
               </div>
             </div>

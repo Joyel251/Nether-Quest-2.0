@@ -103,9 +103,9 @@ export default function round5() {
 
   return (
   <div className="relative min-h-screen w-full overflow-x-hidden text-white font-minecraft bg-[url('/dashboardbg.webp')] bg-cover bg-center bg-fixed">
-      {/* overlays */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(10,0,0,0.15),rgba(0,0,0,0.9))]" />
-      <div className="absolute inset-0 mix-blend-overlay opacity-25 bg-[url('/minecraft-sword-cursor.png')] bg-[length:160px_160px] animate-slow-pan" />
+  {/* overlays (non-interactive) */}
+  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(10,0,0,0.15),rgba(0,0,0,0.9))]" />
+  <div className="pointer-events-none absolute inset-0 mix-blend-overlay opacity-25 bg-[url('/minecraft-sword-cursor.png')] bg-[length:160px_160px] animate-slow-pan" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(45deg,rgba(255,120,40,0.06)_0%,transparent_50%,rgba(255,50,20,0.06)_100%)]" />
 
       <div className="fixed top-4 left-4 z-50"><BackButton variant="label" /></div>
@@ -147,12 +147,12 @@ export default function round5() {
         {/* Puzzle Card */}
         <div className="w-full max-w-xl mx-auto relative">
           <div className="relative bg-gradient-to-br from-black/85 via-zinc-900/80 to-black/70 border border-white/15 backdrop-blur-xl rounded-3xl p-5 sm:p-8 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.8)] overflow-hidden">
-            <div className="absolute inset-0 bg-pink-500/10 opacity-25" />
+            <div className="absolute inset-0 bg-pink-500/10 opacity-25 pointer-events-none" />
             {/* Flip Scene */}
-            <div className="flip-scene w-full max-w-[min(92vw,520px)] mx-auto aspect-square">
+            <div className="flip-scene w-full max-w-[min(92vw,520px)] mx-auto aspect-square pointer-events-auto">
               <div className={`flip-card ${complete ? 'is-complete' : ''}`}>
                 {/* FRONT: Puzzle */}
-                <div className="flip-face front">
+                <div className="flip-face front pointer-events-auto z-10">
                   <div className="grid grid-cols-3 gap-1 sm:gap-2 w-full h-full select-none" aria-label="Jigsaw puzzle board">
                     {order.length === 0 && (
                       <div className="col-span-3 flex items-center justify-center text-xs sm:text-sm text-white/60 animate-pulse">Preparing pieces...</div>
@@ -178,7 +178,7 @@ export default function round5() {
                 ? 'ring-4 ring-pink-300 shadow-[0_0_0_4px_rgba(236,72,153,0.4),0_6px_18px_-6px_rgba(236,72,153,0.55)] scale-[1.045] z-10'
                 : 'ring-1 ring-white/15 hover:ring-pink-300/50'}
                             ${complete ? 'cursor-default' : 'cursor-pointer'}
-                            active:scale-[1.02]`}
+                            active:scale-[1.02] touch-none`}
                           style={imageAvailable ? {
                             backgroundImage: "url(/mine.jpg)",
                             backgroundSize: `${SIZE * 100}% ${SIZE * 100}%`,
@@ -190,7 +190,7 @@ export default function round5() {
                           }}
                           data-index={slotIndex}
                         >
-                          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-black/30 opacity-0 group-hover:opacity-40 transition-opacity" />
+                          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/5 to-black/30 opacity-0 group-hover:opacity-40 transition-opacity" />
                           {selectedPiece && (
                             <>
                               <div className="absolute inset-0 pointer-events-none animate-pulse">
@@ -206,12 +206,12 @@ export default function round5() {
                     })}
                   </div>
                   {!complete && (
-                    <div className="absolute -top-3 -left-3 w-20 h-20 bg-pink-500/20 blur-3xl rounded-full" />
+                    <div className="absolute -top-3 -left-3 w-20 h-20 bg-pink-500/20 blur-3xl rounded-full pointer-events-none" />
                   )}
                 </div>
                 {/* BACK: Clue from DB */}
                 <div className="flip-face back">
-                  {imageAvailable && <div className="absolute inset-0 bg-[url('/mine.jpg')] bg-cover bg-center opacity-25" />}
+                  {imageAvailable && <div className="pointer-events-none absolute inset-0 bg-[url('/mine.jpg')] bg-cover bg-center opacity-25" />}
                   <div className="absolute inset-0 bg-gradient-to-br from-black/75 via-black/60 to-black/75 backdrop-blur-md" />
                   <div className="relative flex flex-col items-center sm:justify-center justify-start h-full p-4 sm:p-8 text-center overflow-y-auto">
                     <div className="max-w-md w-full mx-auto px-4 py-6 sm:py-8 rounded-2xl bg-gradient-to-br from-zinc-900/80 via-black/70 to-zinc-900/80 ring-1 ring-white/10 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.85)] max-h-full overflow-y-auto">

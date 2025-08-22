@@ -53,6 +53,10 @@ export async function updateSession(request: NextRequest) {
     if(user.user_metadata.event_access === true) {
       let round = user.user_metadata.round;
       const url = request.nextUrl.clone();
+      if(round >= 9) {
+        url.pathname = `/dashboard`;
+        return NextResponse.redirect(url);
+      }
       url.pathname = `/rounds/round${round}`;
       let curr_url = request.nextUrl.pathname;
       if(curr_url !== url.pathname){

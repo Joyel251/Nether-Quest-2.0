@@ -1,9 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle, Clock } from 'lucide-react';
-import resolveRound from './resolve';
 
 interface RoundInfo { 
   round: number; 
@@ -36,6 +35,7 @@ const roundColors: Record<RoundInfo['status'], string> = {
 
 export default function ProgressPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState<UserData | null>(null);
   const [eventStarted, setEventStarted] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -43,9 +43,10 @@ export default function ProgressPage() {
 
   useEffect(() => {
     fetchUserData();
-  }, []);
+  }, [pathname]);
 
   const fetchUserData = async () => {
+    setLoading(true);
     try {
       const response = await fetch('/api/user');
       if (response.ok) {

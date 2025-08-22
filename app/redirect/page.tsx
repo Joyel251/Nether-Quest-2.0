@@ -2,7 +2,6 @@
 "use client"
 
 import React from "react";
-import { useRouter } from "next/router";
 
 export default function RoundCompletedPage() {
 
@@ -14,10 +13,10 @@ export default function RoundCompletedPage() {
 
       <div className="relative z-10 max-w-xl mx-auto p-8 bg-gradient-to-br from-zinc-950/90 to-black/85 border border-white/10 backdrop-blur-xl rounded-3xl shadow-2xl text-center">
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-green-400 to-teal-500 drop-shadow mb-4">
-          You have already completed this round!
+          You have completed this round!
         </h1>
         <button
-          onClick={() => useRouter().push("/dashboard/progress")}
+          onClick={() => window.location.href = "/dashboard/progress"}
           className="inline-flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 px-8 py-4 text-lg font-semibold text-white hover:from-emerald-600 hover:to-green-700 transition-all duration-200 shadow-lg hover:shadow-xl border border-white/10 animate-fade-in-up"
         >
           Back to Progress

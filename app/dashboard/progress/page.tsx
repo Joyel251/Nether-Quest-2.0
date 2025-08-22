@@ -12,7 +12,7 @@ interface RoundInfo {
 interface UserData {
   id: string;
   user_metadata: {
-    current_round?: number;
+    round?: number;
     status?: string;
     event_access?: boolean;
     eliminated_at?: string;
@@ -66,7 +66,7 @@ export default function ProgressPage() {
 
   const updateRoundStatus = (userData: UserData) => {
     const updatedRounds: RoundInfo[] = [];
-    const currentRound = userData.user_metadata?.current_round || 1;
+    const currentRound = userData.user_metadata?.round || 1;
     const eventAccess = userData.user_metadata?.event_access || false;
     const userStatus = userData.user_metadata?.status || 'active';
 
@@ -75,7 +75,7 @@ export default function ProgressPage() {
       
       // Check if user is eliminated
       if (userStatus === 'eliminated') {
-        status = i <= currentRound ? 'completed' : 'locked';
+        status = i <= currentRound ? 'unlocked' : 'locked';
       }
       // If event hasn't started, all rounds are locked
       else if (!eventAccess) {
@@ -176,7 +176,7 @@ export default function ProgressPage() {
               </p>
               <div className="mt-3">
                 <button
-                  disabled={r.status === 'locked' || user?.user_metadata?.status === 'eliminated'}
+                  disabled={r.status === 'locked' || user?.user_metadata?.status === 'eliminated' || r.status === "completed"}
                   onClick={() => handleRoundClick(r.round, r.status)}
                   className={`w-full py-1.5 rounded-md text-xs font-semibold border transition-colors ${
                     r.status === 'locked' || user?.user_metadata?.status === 'eliminated'
@@ -189,7 +189,7 @@ export default function ProgressPage() {
                   {user?.user_metadata?.status === 'eliminated' 
                     ? 'Eliminated'
                     : r.status === 'completed' 
-                      ? 'View Round' 
+                      ? '🙏'
                       : r.status === 'unlocked' 
                         ? 'Enter Round' 
                         : !eventStarted 

@@ -76,8 +76,8 @@ export default function LoginPage() {
       hasErrors = true
     } else {
       const num = Number.parseInt(teamNumber)
-      if (isNaN(num) || num < 1 || num > 999) {
-        newErrors.teamNumber = "Team number must be between 1 and 999"
+      if (isNaN(num) || num < 0 || num > 60) {
+        newErrors.teamNumber = "Team number must be between 1 and 60"
         hasErrors = true
       }
     }

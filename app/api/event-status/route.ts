@@ -1,4 +1,4 @@
-import dynamic from 'next/dynamic';
+'use server'
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/utils/supabase_admin';

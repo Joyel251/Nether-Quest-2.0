@@ -14,6 +14,7 @@ export async function signup(formData: FormData) {
         team_number: formData.get('team-number') as string,
         team_name: formData.get('team-name') as string,
         round: 1,
+        role: 'user',
       }
     }
   }

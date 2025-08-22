@@ -30,11 +30,7 @@ export default function useQuestion() {
         if (response.error) {
           throw new Error(response.error || 'Failed to fetch question');
         }
-
-        if (response.error) {
-          throw new Error(response.error || 'Failed to fetch question');
-        }
-
+        
         setState(prev => ({
           ...prev,
           question: response.question,

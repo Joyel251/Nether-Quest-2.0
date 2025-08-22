@@ -3,6 +3,7 @@ import { createClient } from '@/utils/supabase'
 import prisma from '@/utils/prisma';
 import { redirect } from 'next/navigation';
 import { isRedirectError } from 'next/dist/client/components/redirect';
+import { canAdvance } from './advanceRound';
 
 export async function validateAnswer(formData: FormData) {
 
@@ -36,6 +37,8 @@ export async function validateAnswer(formData: FormData) {
                 teamNumber: teamNumber,
             }
         });
+                
+        canAdvance();
 
         return true;
     }

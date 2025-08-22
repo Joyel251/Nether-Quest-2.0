@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/utils/supabase_admin'
+import prisma from '@/utils/prisma'
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,7 +13,11 @@ export async function POST(request: NextRequest) {
     const supabase = await createAdminClient()
     const acceptedParticipants = []
 
+    let i = 0;
+
     for (const participantId of participantIds) {
+      i++;
+
       try {
         // Get current user data
         const { data: { user }, error: getUserError } = await supabase.auth.admin.getUserById(participantId)
@@ -28,10 +33,15 @@ export async function POST(request: NextRequest) {
             ...user.user_metadata,
             round: nextRound,
             status: 'active',
-            accepted_at: new Date().toISOString(),
-            last_updated: new Date().toISOString()
+            qid: i,
           }
         })
+
+        await prisma.round6Submission.create({
+          data: {
+            teamNumber: Number(user.user_metadata?.team_number)
+          }
+        });
 
         if (!updateError && updatedUser) {
           acceptedParticipants.push({

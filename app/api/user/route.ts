@@ -28,7 +28,7 @@ export async function GET() {
       round_7_completed: user.user_metadata?.round_7_completed || false,
       round_8_completed: user.user_metadata?.round_8_completed || false,
       quest_completed: user.user_metadata?.quest_completed || false,
-      current_round: user.user_metadata?.current_round || 1
+      round: user.user_metadata?.round || 1
     })
   } catch (error) {
     console.error('Error getting user data:', error)

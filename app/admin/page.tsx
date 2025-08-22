@@ -41,7 +41,7 @@ interface Participant {
   team_name: string
   team_number: number | string
   status: 'active' | 'eliminated'
-  current_round: number
+  round: number
   eliminated_at?: string
   created_at: string
   updated_at: string
@@ -285,7 +285,7 @@ export default function AdminPage() {
   }
 
   const processRoundLimits = async (roundNumber: number) => {
-    const activeInRound = participants.filter(p => p.status === 'active' && p.current_round === roundNumber)
+    const activeInRound = participants.filter(p => p.status === 'active' && p.round === roundNumber)
     const limit = participantLimits[roundNumber]
     
     if (activeInRound.length > limit) {
@@ -489,7 +489,7 @@ export default function AdminPage() {
 
   const activeParticipants = participants.filter(p => p.status === 'active')
   const eliminatedParticipants = participants.filter(p => p.status === 'eliminated')
-  const currentRoundParticipants = participants.filter(p => p.current_round === currentRound && p.status === 'active')
+  const currentRoundParticipants = participants.filter(p => p.round === currentRound && p.status === 'active')
 
   if (!isAuthenticated) {
     return (
@@ -1016,7 +1016,7 @@ export default function AdminPage() {
                               </div>
                               <div className="flex flex-col items-end gap-1">
                                 <Badge variant="secondary" className="text-[10px] sm:text-xs px-1 sm:px-2 py-0.5 sm:py-1">
-                                  R{participant.current_round}
+                                  R{participant.round}
                                 </Badge>
                                 {selectedParticipants.has(participant.id) && (
                                   <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />

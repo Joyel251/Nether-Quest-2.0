@@ -63,7 +63,7 @@ export async function GET() {
             team_name: user.user_metadata?.team_name || `Team ${teamNumber}`,
             team_number: teamNumber,
             status: user.user_metadata?.status || 'active',
-            current_round: user.user_metadata?.current_round || user.user_metadata?.round || 1,
+            round: user.user_metadata?.round || 1,
             eliminated_at: user.user_metadata?.eliminated_at || null,
             total_score: user.user_metadata?.total_score || 0,
             answers_correct: user.user_metadata?.answers_correct || 0,

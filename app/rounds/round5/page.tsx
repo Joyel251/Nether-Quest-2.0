@@ -5,7 +5,8 @@ import BackButton from "@/components/BackButton"
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { toast } from "@/hooks/use-toast"
 import useQuestion from "./useQuestion"
-import {validateAnswer} from "./action"
+import { validateAnswer } from "./action"
+import { Button } from "@/components/ui/button"
 
 const SIZE = 3 // 3x3
 
@@ -16,24 +17,19 @@ export default function round5() {
   const [complete, setComplete] = useState(false)
   const [confetti, setConfetti] = useState<{id:number;left:number;delay:number;duration:number;color:string;size:number;rotate:number;}[]>([])
   const dragFrom = useRef<number | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
 
   const ids = useMemo(() => Array.from({ length: SIZE * SIZE }, (_, i) => i), [])
   const [imageAvailable, setImageAvailable] = useState(true)
 
-  // initial shuffle or load solved state & detect image availability
+  // initial shuffle & detect image availability (no local storage)
   useEffect(() => {
     // detect image presence
     const img = new Image()
     img.src = '/mine.jpg'
     img.onload = () => setImageAvailable(true)
     img.onerror = () => setImageAvailable(false)
-
-    const solvedFlag = typeof window !== 'undefined' && localStorage.getItem('round5_solved')
-    if (solvedFlag) {
-      setOrder(ids) // solved order
-      setComplete(true)
-      return
-    }
 
     const shuffled = [...ids].sort(() => Math.random() - 0.5)
     if (shuffled.every((id, i) => id === i)) {
@@ -45,18 +41,13 @@ export default function round5() {
   // check completion (persist completion, show toast)
   useEffect(() => {
     if (order.length === ids.length && order.every((id, i) => id === i)) {
-      if (complete) {
+      if (!complete) {
         setComplete(true)
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('round5_solved', '1')
-        }
         toast({
           title: "🎉 Puzzle Solved!",
           description: "Great job! You completed the 3×3 jigsaw.",
           className: "bg-emerald-900/90 border-emerald-500/50 text-emerald-100",
         })
-        // mark in DB as submitted
-        validateAnswer().catch(() => {})
         // create confetti pieces
         const colors = ['#f472b6','#fb923c','#facc15','#34d399','#60a5fa','#c084fc']
         const pieces = Array.from({length: 40}, (_, i) => ({
@@ -200,9 +191,6 @@ export default function round5() {
                           data-index={slotIndex}
                         >
                           <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-black/30 opacity-0 group-hover:opacity-40 transition-opacity" />
-                          <span className={`absolute bottom-1 right-1 text-[10px] sm:text-xs font-medium px-1.5 py-0.5 rounded-md backdrop-blur-sm transition-colors ${selectedPiece ? 'bg-pink-500/80 text-white drop-shadow' : 'bg-black/55 text-white/80'} shadow-[0_2px_4px_rgba(0,0,0,0.6)]`}>
-                            {pieceId + 1}
-                          </span>
                           {selectedPiece && (
                             <>
                               <div className="absolute inset-0 pointer-events-none animate-pulse">
@@ -212,11 +200,6 @@ export default function round5() {
                                 <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-pink-400/25 animate-tile-ripple" />
                               </span>
                             </>
-                          )}
-                          {!imageAvailable && (
-                            <div className="absolute inset-0 flex items-center justify-center text-[10px] sm:text-xs font-semibold tracking-wide text-white/70">
-                              {pieceId + 1}
-                            </div>
                           )}
                         </div>
                       )
@@ -237,10 +220,44 @@ export default function round5() {
                       </h2>
                       <p className="text-neutral-100/90 text-sm sm:text-base leading-relaxed min-h-[2.5rem] whitespace-pre-wrap break-words">
                         {loading ? 'Loading…' : (clue ?? 'No clue available')}
+                        Click submit to record your completion for the leaderboard. <br />
+                        <div className="text-red-700">Note: Once submitted and the page is refreshed, you cannot access the Clue</div>
                       </p>
                       <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-[11px] sm:text-xs text-white/80">
                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-black/50 backdrop-blur-sm border border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.6)]">🧩 Solved</span>
                       </div>
+                      {/* Submit button to record completion in DB */}
+                      {!submitted && (
+                        <div className="mt-6 flex justify-center">
+                          <Button
+                            disabled={submitting}
+                            onClick={async () => {
+                              try {
+                                setSubmitting(true)
+                                const res = await validateAnswer()
+                                if ((res as any)?.error) throw new Error((res as any).error)
+                                setSubmitted(true)
+                                toast({
+                                  title: "✅ Submitted!",
+                                  description: "Your Round 5 completion has been recorded for the leaderboard.",
+                                  className: "bg-emerald-900/90 border-emerald-500/50 text-emerald-100",
+                                })
+                              } catch (e: any) {
+                                toast({
+                                  title: "Submission failed",
+                                  description: e?.message || 'Please try again.',
+                                  className: "bg-red-900/80 border-red-500/40 text-red-100",
+                                })
+                              } finally {
+                                setSubmitting(false)
+                              }
+                            }}
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-lg shadow-emerald-900/30"
+                          >
+                            {submitting ? 'Submitting…' : 'Submit'}
+                          </Button>
+                        </div>
+                      )}
                       {/* removed pink divider line and image-availability notice for cleaner UI */}
                     </div>
                   </div>

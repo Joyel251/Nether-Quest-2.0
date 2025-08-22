@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
         const { data: updatedUser, error: updateError } = await supabase.auth.admin.updateUserById(participantId, {
           user_metadata: {
             ...user.user_metadata,
-            current_round: nextRound,
+            round: nextRound,
             status: 'active',
             accepted_at: new Date().toISOString(),
             last_updated: new Date().toISOString()

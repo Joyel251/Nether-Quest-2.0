@@ -2,8 +2,10 @@
 "use client"
 
 import React from "react";
+import { useRouter } from "next/navigation";
 
 export default function RoundCompletedPage() {
+  const router = useRouter();
 
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center text-white font-minecraft bg-[url('/dashboardbg.webp')] bg-cover bg-center bg-fixed">
@@ -15,12 +17,13 @@ export default function RoundCompletedPage() {
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-green-400 to-teal-500 drop-shadow mb-4">
           You have completed this round!
         </h1>
-        <button
-          onClick={() => window.location.href = "/dashboard/progress"}
+        <a
+          onClick={router.refresh}
+          href="/dashboard/progress"
           className="inline-flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 px-8 py-4 text-lg font-semibold text-white hover:from-emerald-600 hover:to-green-700 transition-all duration-200 shadow-lg hover:shadow-xl border border-white/10 animate-fade-in-up"
         >
           Back to Progress
-        </button>
+        </a>
       </div>
     </div>
   );

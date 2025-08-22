@@ -50,7 +50,7 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (user && request.nextUrl.pathname.startsWith('/rounds')) {
-    if(user.user_metadata.event_access === "true") {
+    if(user.user_metadata.event_access === true) {
       let round = user.user_metadata.round;
       const url = request.nextUrl.clone();
       url.pathname = `/rounds/round${round}`;

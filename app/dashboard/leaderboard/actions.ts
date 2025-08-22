@@ -14,6 +14,8 @@ const tableByRound: Record<number, keyof typeof prisma> = {
   4: 'round4Submission',
   5: 'round5Submission',
   6: 'round6Submission',
+  7: 'round7Submission',
+  8: 'round8Submission',
 } as const
 
 export async function getLeaderboard(round: number, limit = 100): Promise<{ entries: LeaderboardEntry[] } | { error: string } > {

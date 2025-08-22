@@ -28,29 +28,8 @@ export default function round6() {
                 Round 6
               </h1>
             </div>
-            
-            <div className="space-y-6 text-center">
-              <div className="w-24 h-24 mx-auto bg-amber-500/10 rounded-full flex items-center justify-center mb-6">
-                <span className="text-5xl">🚧</span>
-              </div>
-              
-              <h2 className="text-2xl sm:text-3xl font-bold text-white">Coming Soon!</h2>
-              <p className="text-white/70 text-lg leading-relaxed max-w-md mx-auto">
-                This round is currently under development. Check back soon for an exciting new challenge!
-              </p>
-              
-              <div className="pt-6">
-                <button
-                  onClick={() => router.push('/dashboard/progress')}
-                  className="inline-flex items-center gap-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 px-8 py-4 text-lg font-semibold text-white hover:from-amber-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl border border-white/10"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                  Back to Progress
-                </button>
-              </div>
-            </div>
+
+            <div>this is an offline round</div>
           </div>
         </div>
       </div>

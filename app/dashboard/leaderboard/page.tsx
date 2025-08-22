@@ -9,6 +9,8 @@ const roundOptions = [
   { id: 4, label: 'Round 4' },
   { id: 5, label: 'Round 5' },
   { id: 6, label: 'Round 6' },
+  { id: 7, label: 'Round 7' },
+  { id: 8, label: 'Round 8' },
 ];
 
 function formatTimeAgo(iso: string) {

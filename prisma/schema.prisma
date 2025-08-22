@@ -109,21 +109,48 @@ model Round5Submission {
   @@map("round5Submission")  
 }
 
-model Round6 {
-  id          String  @id @default(cuid())
-  teamNumber  Int     @unique
-  question    String
-  answer      String
-  clue        String?
-  Submitted   Boolean @default(false)
-
-  @@map("round6")
-}
-
 model Round6Submission {
   id              String    @id @default(cuid())
   teamNumber      Int       @unique
   submissionTime  DateTime  @default(now())
 
   @@map("round6Submission")  
+}
+
+model QuestionSet {
+  id              Int       @id
+  clue1           String
+  clue2           String
+  clue3           String
+  answer          String
+
+  @@map("questionset")
+}
+
+model Round7Submission {
+  id              String    @id @default(cuid())
+  teamNumber      Int       @unique
+  submissionTime  DateTime  @default(now())
+
+  @@map("round7Submission")  
+}
+
+model Round8 {
+  id          String  @id @default(cuid())
+  teamNumber  Int     @unique
+  question    String
+  answer      String
+  clue1       String
+  clue2       String
+  Submitted   Boolean @default(false)
+
+  @@map("round8")
+}
+
+model Round8Submission {
+  id              String    @id @default(cuid())
+  teamNumber      Int       @unique
+  submissionTime  DateTime  @default(now())
+
+  @@map("round8Submission")  
 }

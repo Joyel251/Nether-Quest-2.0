@@ -5,9 +5,12 @@ import { redirect } from 'next/navigation';
 import { isRedirectError } from 'next/dist/client/components/redirect';
 import { canAdvance } from './advanceRound';
 
-export async function validateAnswer() {
+export async function validateAnswer(formData: FormData) {
 
+    let givenAnswer = formData.get('answer') as string;
     const supabase = await createClient();
+
+    console.log('Validating answer:', givenAnswer)
 
     const {
     data: { user },
@@ -15,29 +18,35 @@ export async function validateAnswer() {
 
     const teamNumber = Number(user?.user_metadata.team_number);
 
-    let res = await prisma.round5.findFirst({
+    let res = await prisma.round4.findFirst({
             where: {
                 teamNumber: teamNumber,
             }
     });
-    let res2 = await prisma.round5.update({
-        where: {
-            teamNumber: teamNumber,
-        },
-        data: {
-            Submitted: true,
-        }
-    });
 
-    let submission = await prisma.round5Submission.create({
-        data: {
-            teamNumber: teamNumber,
-        }
-    });
-            
-    canAdvance();
+    console.log('Round 4 answer check:', res?.answer);
 
-    return true;
+    if (res?.answer === givenAnswer) {
+        let res = await prisma.round4.update({
+            where: {
+                teamNumber: teamNumber,
+            },
+            data: {
+                Submitted: true,
+            }
+        });
+
+        let submission = await prisma.round4Submission.create({
+            data: {
+                teamNumber: teamNumber,
+            }
+        });
+                
+        canAdvance();
+
+        return true;
+    }
+    return false;
 };
 
 export async function getQuestion() {
@@ -61,15 +70,13 @@ export async function getQuestion() {
 
         const teamNumber = Number(user.user_metadata.team_number);
 
-        const res = await prisma.round5.findFirst({
+        const res = await prisma.round4.findFirst({
             where: { teamNumber: teamNumber }
         });
 
         if (!res) {
             return { error: 'Team not found' };
         }
-
-        console.log('Round 5 fetched data:', res);
 
         if (res.Submitted === true) {
             redirect('/redirect');

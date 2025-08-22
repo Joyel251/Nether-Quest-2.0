@@ -7,7 +7,7 @@ export async function fetchRound() {
 
     const {
     data: { user },
-    } = await supabase.auth.getUser();
+    } = await supabase.auth.updateUser({ data: { round: 5 } });
 
     return user?.user_metadata.round;
 

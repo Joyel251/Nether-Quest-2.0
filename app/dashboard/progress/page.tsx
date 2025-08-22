@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle, Clock } from 'lucide-react';
+import resolveRound from './resolve';
 
 interface RoundInfo { 
   round: number; 
@@ -39,7 +40,6 @@ export default function ProgressPage() {
   const [eventStarted, setEventStarted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [rounds, setRounds] = useState<RoundInfo[]>([]);
-
 
   useEffect(() => {
     fetchUserData();

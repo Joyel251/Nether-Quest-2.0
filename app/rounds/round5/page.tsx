@@ -5,7 +5,7 @@ import BackButton from "@/components/BackButton"
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { toast } from "@/hooks/use-toast"
 import useQuestion from "./useQuestion"
-import { markCompleted } from "./action"
+import {validateAnswer} from "./action"
 
 const SIZE = 3 // 3x3
 
@@ -34,6 +34,7 @@ export default function round5() {
       setComplete(true)
       return
     }
+
     const shuffled = [...ids].sort(() => Math.random() - 0.5)
     if (shuffled.every((id, i) => id === i)) {
       ;[shuffled[0], shuffled[1]] = [shuffled[1], shuffled[0]] // ensure not pre-solved
@@ -44,7 +45,7 @@ export default function round5() {
   // check completion (persist completion, show toast)
   useEffect(() => {
     if (order.length === ids.length && order.every((id, i) => id === i)) {
-      if (!complete) {
+      if (complete) {
         setComplete(true)
         if (typeof window !== 'undefined') {
           localStorage.setItem('round5_solved', '1')
@@ -55,7 +56,7 @@ export default function round5() {
           className: "bg-emerald-900/90 border-emerald-500/50 text-emerald-100",
         })
         // mark in DB as submitted
-        markCompleted().catch(() => {})
+        validateAnswer().catch(() => {})
         // create confetti pieces
         const colors = ['#f472b6','#fb923c','#facc15','#34d399','#60a5fa','#c084fc']
         const pieces = Array.from({length: 40}, (_, i) => ({
@@ -229,22 +230,18 @@ export default function round5() {
                 <div className="flip-face back">
                   {imageAvailable && <div className="absolute inset-0 bg-[url('/mine.jpg')] bg-cover bg-center opacity-25" />}
                   <div className="absolute inset-0 bg-gradient-to-br from-black/75 via-black/60 to-black/75 backdrop-blur-md" />
-                  <div className="relative flex flex-col items-center justify-center h-full p-4 sm:p-8 text-center">
-                    <div className="max-w-md w-full mx-auto px-4 py-6 sm:py-8 rounded-2xl bg-gradient-to-br from-zinc-900/80 via-black/70 to-zinc-900/80 ring-1 ring-white/10 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.85)]">
+                  <div className="relative flex flex-col items-center sm:justify-center justify-start h-full p-4 sm:p-8 text-center overflow-y-auto">
+                    <div className="max-w-md w-full mx-auto px-4 py-6 sm:py-8 rounded-2xl bg-gradient-to-br from-zinc-900/80 via-black/70 to-zinc-900/80 ring-1 ring-white/10 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.85)] max-h-full overflow-y-auto">
                       <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 via-teal-300 to-emerald-400 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] tracking-tight">
                         Clue Unlocked
                       </h2>
-                      <p className="text-neutral-100/90 text-sm sm:text-lg leading-relaxed min-h-[2.5rem]">
+                      <p className="text-neutral-100/90 text-sm sm:text-base leading-relaxed min-h-[2.5rem] whitespace-pre-wrap break-words">
                         {loading ? 'Loading…' : (clue ?? 'No clue available')}
                       </p>
                       <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-[11px] sm:text-xs text-white/80">
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-black/50 backdrop-blur-sm border border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.6)]">🔥 Blaze Hint</span>
                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-black/50 backdrop-blur-sm border border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.6)]">🧩 Solved</span>
                       </div>
-                      <div className="mt-8 w-40 h-1 rounded-full bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 shadow-[0_2px_8px_-2px_rgba(244,114,182,0.6)]" />
-                      {!imageAvailable && (
-                        <p className="mt-5 text-[10px] sm:text-xs text-white/40">Image not found. Add <code className='px-1 bg-white/10 rounded'>mine.jpg</code> to /public for visual puzzle.</p>
-                      )}
+                      {/* removed pink divider line and image-availability notice for cleaner UI */}
                     </div>
                   </div>
                 </div>
